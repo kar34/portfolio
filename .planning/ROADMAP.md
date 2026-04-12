@@ -10,7 +10,7 @@
 **Plans:** 2 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Initialize Astro project, install dependencies, copy assets, configure Tailwind and global styles
+- [x] 01-01-PLAN.md — Initialize Astro project, install dependencies, copy assets, configure Tailwind and global styles
 - [ ] 01-02-PLAN.md — Create base Layout.astro with nav, footer, Lenis smooth scroll, and placeholder index page
 
 **Deliverables:**
