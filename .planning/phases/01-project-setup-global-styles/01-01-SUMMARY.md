@@ -72,7 +72,7 @@ Each task was committed atomically:
 1. **Task 1: Create Astro project, install dependencies, copy all assets** - `847422e` (feat)
 2. **Task 2: Configure Tailwind CSS v4 via Vite plugin, create global styles** - `877e1f3` (feat)
 
-**Plan metadata:** (pending — created after self-check)
+**Plan metadata:** `eaf64cd` (docs: complete plan)
 
 ## Files Created/Modified
 - `portfolio/astro.config.mjs` - Astro config with @tailwindcss/vite Vite plugin
@@ -101,6 +101,17 @@ None — no external service configuration required.
 - portfolio/ project is initialized and ready for layout and page development
 - `npm run dev` will start the dev server (requires Node >=22 — use `PATH=~/.volta/tools/image/node/24.6.0/bin:$PATH npm run dev`)
 - Plan 01-02 can begin immediately: create Layout.astro with nav, footer, Lenis, and placeholder index page
+
+## Self-Check: PASSED
+
+- FOUND: portfolio/astro.config.mjs
+- FOUND: portfolio/package.json
+- FOUND: portfolio/src/styles/global.css
+- FOUND: portfolio/public/favicon.png
+- FOUND: .planning/phases/01-project-setup-global-styles/01-01-SUMMARY.md
+- FOUND commit: 847422e (Task 1)
+- FOUND commit: 877e1f3 (Task 2)
+- FOUND commit: eaf64cd (plan metadata)
 
 ---
 *Phase: 01-project-setup-global-styles*
