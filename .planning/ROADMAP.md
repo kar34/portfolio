@@ -48,6 +48,11 @@ Plans:
 
 **Requirements:** REQ-011, REQ-016, REQ-017
 
+**Plans:** 1 plan
+
+Plans:
+- [ ] 03-01-PLAN.md — Work page with Work heading and 3 project cards + visual verification
+
 **Deliverables:**
 - `src/pages/work.astro` complete
 - 3 project cards (LinkedIn Video, Reactions, Nearby Friends) linking to their pages
