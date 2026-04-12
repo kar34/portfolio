@@ -1,92 +1,49 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import WorkCards from '../components/WorkCards.astro';
 ---
 
 <Layout>
   <!-- Hero Section -->
-  <section class="pt-28 pb-20 px-6 md:px-10">
-    <div class="max-w-4xl mx-auto">
+  <section class="pt-28 pb-16 px-10 md:px-20">
 
-      <!-- Name heading -->
-      <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold uppercase tracking-tight text-center">
-        Kenny Raymond
-      </h1>
+    <!-- Name -->
+    <h1 class="text-[clamp(2.5rem,7.5vw,8rem)] font-semibold uppercase tracking-tight leading-none">
+      Kenny Raymond
+    </h1>
 
-      <!-- Portrait row: email (desktop) | portrait | icons (desktop) -->
-      <div class="flex flex-col items-center mt-6 md:mt-8">
-        <div class="flex items-center justify-center gap-6 md:gap-10 w-full">
+    <!-- Portrait row: email | portrait | social icons — centered and close together -->
+    <div class="mt-8 md:mt-10 flex items-center justify-center gap-8 md:gap-10">
 
-          <!-- Email link — desktop only -->
-          <a
-            href="mailto:kennyraymond20@gmail.com"
-            class="hidden md:block text-sm text-white/80"
-          >
-            kennyraymond20@gmail.com
-          </a>
+      <!-- Email — desktop only -->
+      <a
+        href="mailto:kennyraymond20@gmail.com"
+        class="hidden md:flex items-center text-lg text-white/80"
+      >
+        kennyraymond20@gmail.com
+      </a>
 
-          <!-- Circular portrait -->
-          <div class="w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden flex-shrink-0">
-            <img
-              src="/b&w ken sm.png"
-              alt="Kenny Raymond portrait"
-              class="w-full h-full object-cover"
-            />
-          </div>
-
-          <!-- Social icons — desktop only -->
-          <div class="hidden md:flex items-center gap-3">
-            <a
-              href="https://www.linkedin.com/in/kennyraymond/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn"
-            >
-              <img src="/LinkedIn Logo Icon (1).png" alt="LinkedIn" class="w-5 h-5" />
-            </a>
-            <a
-              href="mailto:kennyraymond20@gmail.com"
-              aria-label="Email"
-            >
-              <img src="/Email Logo Icon (1).png" alt="Email" class="w-5 h-5" />
-            </a>
-            <a
-              href="https://soundcloud.com/dj-m3lodic"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="SoundCloud"
-            >
-              <img src="/SoundCloud Logo Icon (1).png" alt="SoundCloud" class="w-5 h-5" />
-            </a>
-          </div>
-
-        </div>
+      <!-- Portrait -->
+      <div class="w-36 h-36 md:w-40 md:h-40 rounded-full overflow-hidden flex-shrink-0">
+        <img
+          src="/b&w ken sm.png"
+          alt="Kenny Raymond portrait"
+          class="w-full h-full object-cover"
+        />
       </div>
 
-      <!-- Title -->
-      <h2 class="text-3xl md:text-4xl lg:text-5xl font-semibold uppercase tracking-tight text-center mt-4 md:mt-6">
-        Product Designer
-      </h2>
-
-      <!-- Location -->
-      <p class="text-sm text-white/60 text-center md:text-right mt-2">
-        Based in Los Angeles
-      </p>
-
-      <!-- Social icons — mobile only -->
-      <div class="flex md:hidden items-center justify-center gap-4 mt-4">
+      <!-- Social icons — desktop only -->
+      <div class="hidden md:flex items-center gap-5">
         <a
           href="https://www.linkedin.com/in/kennyraymond/"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="LinkedIn"
         >
-          <img src="/LinkedIn Logo Icon (1).png" alt="LinkedIn" class="w-5 h-5" />
+          <img src="/LinkedIn Logo Icon (1).png" alt="LinkedIn" class="w-10 h-10" />
         </a>
-        <a
-          href="mailto:kennyraymond20@gmail.com"
-          aria-label="Email"
-        >
-          <img src="/Email Logo Icon (1).png" alt="Email" class="w-5 h-5" />
+        <a href="mailto:kennyraymond20@gmail.com" aria-label="Email">
+          <img src="/Email Logo Icon (1).png" alt="Email" class="w-10 h-10" />
         </a>
         <a
           href="https://soundcloud.com/dj-m3lodic"
@@ -94,101 +51,69 @@ import Layout from '../layouts/Layout.astro';
           rel="noopener noreferrer"
           aria-label="SoundCloud"
         >
-          <img src="/SoundCloud Logo Icon (1).png" alt="SoundCloud" class="w-5 h-5" />
+          <img src="/SoundCloud Logo Icon (1).png" alt="SoundCloud" class="w-10 h-10" />
         </a>
       </div>
 
     </div>
+
+    <!-- Title -->
+    <h2 class="text-[clamp(2.5rem,7.5vw,8rem)] font-semibold uppercase tracking-tight leading-none mt-6 md:mt-8">
+      Product Designer
+    </h2>
+
+    <!-- Location -->
+    <p class="text-base text-white/60 text-right mt-3">
+      Based in Los Angeles
+    </p>
+
+    <!-- Social icons — mobile only -->
+    <div class="flex md:hidden items-center justify-center gap-6 mt-6">
+      <a
+        href="https://www.linkedin.com/in/kennyraymond/"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="LinkedIn"
+      >
+        <img src="/LinkedIn Logo Icon (1).png" alt="LinkedIn" class="w-8 h-8" />
+      </a>
+      <a href="mailto:kennyraymond20@gmail.com" aria-label="Email">
+        <img src="/Email Logo Icon (1).png" alt="Email" class="w-8 h-8" />
+      </a>
+      <a
+        href="https://soundcloud.com/dj-m3lodic"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="SoundCloud"
+      >
+        <img src="/SoundCloud Logo Icon (1).png" alt="SoundCloud" class="w-8 h-8" />
+      </a>
+    </div>
+
   </section>
 
   <!-- About Section -->
-  <section class="py-20 md:py-28 px-6 md:px-10">
-    <div class="max-w-4xl mx-auto">
-      <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-8 md:gap-16">
+  <section class="py-20 md:py-28 px-10 md:px-20">
+    <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-8 md:gap-16">
 
-        <h2 class="text-4xl md:text-5xl font-semibold uppercase tracking-tight">
-          About
-        </h2>
+      <h2 class="text-5xl md:text-7xl font-semibold uppercase tracking-tight">
+        About
+      </h2>
 
-        <p class="text-base md:text-lg leading-relaxed text-white/90 md:max-w-sm md:text-right">
-          With 10+ years of experience, I shape product experiences through compelling storytelling and a bias toward building.
-        </p>
+      <p class="text-base md:text-lg leading-relaxed text-white/90 md:max-w-xs md:text-right">
+        With 10+ years of experience, I shape product experiences through compelling storytelling and a bias toward building.
+      </p>
 
-      </div>
     </div>
   </section>
 
   <!-- Work Section -->
-  <section class="py-20 md:py-28 px-6 md:px-10">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-[20vw] md:text-[18vw] lg:text-[16vw] font-semibold uppercase tracking-tighter leading-none">
-        Work
-      </h2>
-    </div>
+  <section class="py-20 md:py-28 px-10 md:px-20">
+    <h2 class="text-[20vw] font-semibold uppercase tracking-tighter leading-none">
+      Work
+    </h2>
 
-    <div class="flex flex-col items-center gap-20 md:gap-28 mt-16 md:mt-24">
-
-      <!-- Card 1: LinkedIn Video -->
-      <a
-        href="/project/linkedin-video"
-        class="block w-full max-w-xs rounded-2xl overflow-hidden relative"
-      >
-        <img
-          src="/LinkedInVideodesktopTile.png"
-          alt="LinkedIn Video project"
-          class="w-full aspect-square object-cover"
-        />
-        <div class="absolute bottom-0 left-0 right-0 p-5">
-          <h3 class="text-base font-semibold uppercase tracking-tight text-white">
-            LinkedIn Video
-          </h3>
-          <p class="text-xs text-white/80 mt-1">
-            Launching LinkedIn's short-form video experience to elevate professional storytelling
-          </p>
-        </div>
-      </a>
-
-      <!-- Card 2: Reactions -->
-      <a
-        href="/project/linkedin-reactions"
-        class="block w-full max-w-xs rounded-2xl overflow-hidden relative"
-      >
-        <img
-          src="/Reactionshero.png"
-          alt="LinkedIn Reactions project"
-          class="w-full aspect-square object-cover"
-        />
-        <div class="absolute bottom-0 left-0 right-0 p-5">
-          <h3 class="text-base font-semibold uppercase tracking-tight text-white">
-            Reactions
-          </h3>
-          <p class="text-xs text-white/80 mt-1">
-            Elevating the motion design for LinkedIn's reactions in feed
-          </p>
-        </div>
-      </a>
-
-      <!-- Card 3: Nearby Friends -->
-      <a
-        href="/project/nearby-friends"
-        class="block w-full max-w-xs rounded-2xl overflow-hidden relative"
-      >
-        <img
-          src="/NBFTile.png"
-          alt="Nearby Friends project"
-          class="w-full aspect-square object-cover"
-        />
-        <div class="absolute bottom-0 left-0 right-0 p-5">
-          <h3 class="text-base font-semibold uppercase tracking-tight text-white">
-            Nearby Friends
-          </h3>
-          <p class="text-xs text-white/80 mt-1">
-            Increasing sign-ups and retention by redesigning the onboarding flow
-          </p>
-        </div>
-      </a>
-
-    </div>
+    <WorkCards />
   </section>
 
 </Layout>
