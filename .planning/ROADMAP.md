@@ -28,11 +28,11 @@ Plans:
 
 **Requirements:** REQ-008, REQ-009, REQ-010, REQ-016, REQ-017
 
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
-- [ ] 02-01-PLAN.md — Hero section (name, portrait, email, social icons, title, location) and About section (heading + bio snippet)
-- [ ] 02-02-PLAN.md — WORK section with 3 project cards (LinkedIn Video, Reactions, Nearby Friends) + visual verification checkpoint
+- [x] 02-01-PLAN.md — Hero section (name, portrait, email, social icons, title, location) and About section (heading + bio snippet)
+- [x] 02-02-PLAN.md — WORK section with 3 project cards (LinkedIn Video, Reactions, Nearby Friends) + visual verification checkpoint
 
 **Deliverables:**
 - `src/pages/index.astro` complete
@@ -48,10 +48,10 @@ Plans:
 
 **Requirements:** REQ-011, REQ-016, REQ-017
 
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
-- [ ] 03-01-PLAN.md — Work page with Work heading and 3 project cards + visual verification
+- [x] 03-01-PLAN.md — Work page with Work heading and 3 project cards + visual verification
 
 **Deliverables:**
 - `src/pages/work.astro` complete
