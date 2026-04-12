@@ -28,6 +28,12 @@ Plans:
 
 **Requirements:** REQ-008, REQ-009, REQ-010, REQ-016, REQ-017
 
+**Plans:** 2 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Hero section (name, portrait, email, social icons, title, location) and About section (heading + bio snippet)
+- [ ] 02-02-PLAN.md — WORK section with 3 project cards (LinkedIn Video, Reactions, Nearby Friends) + visual verification checkpoint
+
 **Deliverables:**
 - `src/pages/index.astro` complete
 - Hero: "KENNY RAYMOND", portrait (b&w circular), email link, social icons, "PRODUCT DESIGNER", "Based in Los Angeles"
