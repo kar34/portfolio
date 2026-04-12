@@ -7,11 +7,11 @@
 
 **Requirements:** REQ-001, REQ-002, REQ-003, REQ-004, REQ-005, REQ-006, REQ-007
 
-**Plans:** 2 plans
+**Plans:** 2/2 plans complete
 
 Plans:
 - [x] 01-01-PLAN.md — Initialize Astro project, install dependencies, copy assets, configure Tailwind and global styles
-- [ ] 01-02-PLAN.md — Create base Layout.astro with nav, footer, Lenis smooth scroll, and placeholder index page
+- [x] 01-02-PLAN.md — Create base Layout.astro with nav, footer, Lenis smooth scroll, and placeholder index page
 
 **Deliverables:**
 - Astro project created in `portfolio/` with Tailwind CSS and Lenis installed
