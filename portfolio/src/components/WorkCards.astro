@@ -56,22 +56,36 @@
 </div>
 
 <script>
-  const parallaxCards = document.querySelectorAll('.parallax-card');
+  function startParallax() {
+    // Guard so we don't start a second rAF loop if one is still draining
+    if ((window as any).__parallaxRunning) return;
 
-  function updateParallax() {
-    const vh = window.innerHeight;
-    parallaxCards.forEach((card) => {
-      const img = card.querySelector('.parallax-img') as HTMLElement | null;
-      if (!img) return;
-      const rect = card.getBoundingClientRect();
-      // Zoom from scale(1) as card enters viewport, stopping once card center hits viewport center
-      const scrolled = vh - rect.top;
-      const stopAt = vh / 2 + rect.height / 2;
-      const progress = Math.max(0, Math.min(1, scrolled / stopAt));
-      img.style.transform = `scale(${1 + progress * 0.15})`;
-    });
+    const parallaxCards = document.querySelectorAll('.parallax-card');
+    if (parallaxCards.length === 0) return;
+
+    (window as any).__parallaxRunning = true;
+
+    function updateParallax() {
+      const cards = document.querySelectorAll('.parallax-card');
+      if (cards.length === 0) {
+        (window as any).__parallaxRunning = false;
+        return;
+      }
+      const vh = window.innerHeight;
+      cards.forEach((card) => {
+        const img = card.querySelector('.parallax-img') as HTMLElement | null;
+        if (!img) return;
+        const rect = card.getBoundingClientRect();
+        const scrolled = vh - rect.top;
+        const stopAt = vh / 2 + rect.height / 2;
+        const progress = Math.max(0, Math.min(1, scrolled / stopAt));
+        img.style.transform = `scale(${1 + progress * 0.15})`;
+      });
+      requestAnimationFrame(updateParallax);
+    }
+
     requestAnimationFrame(updateParallax);
   }
 
-  requestAnimationFrame(updateParallax);
+  document.addEventListener('astro:page-load', startParallax);
 </script>

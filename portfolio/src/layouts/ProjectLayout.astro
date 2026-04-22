@@ -41,11 +41,12 @@ const { title, subtitle, pageTitle } = Astro.props;
 </Layout>
 
 <script>
-  const lb      = document.getElementById('lightbox')       as HTMLElement | null;
-  const lbImg   = document.getElementById('lightbox-img')   as HTMLImageElement | null;
-  const lbClose = document.getElementById('lightbox-close') as HTMLButtonElement | null;
+  function initLightbox() {
+    const lb      = document.getElementById('lightbox')       as HTMLElement | null;
+    const lbImg   = document.getElementById('lightbox-img')   as HTMLImageElement | null;
+    const lbClose = document.getElementById('lightbox-close') as HTMLButtonElement | null;
 
-  if (lb && lbImg && lbClose) {
+    if (lb && lbImg && lbClose) {
     const isMobile = () => window.innerWidth < 768;
 
     let scale = 1, tx = 0, ty = 0;
@@ -139,7 +140,10 @@ const { title, subtitle, pageTitle } = Astro.props;
     lbImg.addEventListener('touchend', (e) => {
       if (e.touches.length === 0 && scale <= 1) reset();
     });
+    }
   }
+
+  document.addEventListener('astro:page-load', initLightbox);
 </script>
 
 <style>

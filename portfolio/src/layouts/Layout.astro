@@ -6,6 +6,7 @@ interface Props {
 
 const { title = 'Kenny Raymond - Product Designer', hideFooter = false } = Astro.props;
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 ---
 
 <html lang="en">
@@ -17,11 +18,15 @@ import '../styles/global.css';
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <title>{title}</title>
+    <ClientRouter />
   </head>
   <body>
 
+    <!-- Reveal transition panel — slides up to cover viewport during page swap -->
+    <div id="reveal-panel" transition:persist aria-hidden="true"></div>
+
     <!-- Custom cursor (desktop only) -->
-    <div id="cursor" aria-hidden="true"></div>
+    <div id="cursor" transition:persist aria-hidden="true"></div>
 
     <!-- Navigation -->
     <nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-[8vw] py-5">
@@ -87,37 +92,131 @@ import '../styles/global.css';
       import Lenis from 'lenis';
       import 'lenis/dist/lenis.css';
 
-      const lenis = new Lenis({
-        lerp: 0.15,
-        wheelMultiplier: 1,
-      });
-
-      function raf(time: number) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
+      declare global {
+        interface Window {
+          __lenis?: Lenis;
+          __cursorInit?: boolean;
+          __revealInit?: boolean;
+        }
       }
 
-      requestAnimationFrame(raf);
+      if (!window.__lenis) {
+        const lenis = new Lenis({
+          lerp: 0.15,
+          wheelMultiplier: 1,
+        });
+        window.__lenis = lenis;
+
+        function raf(time: number) {
+          window.__lenis?.raf(time);
+          requestAnimationFrame(raf);
+        }
+
+        requestAnimationFrame(raf);
+      }
+    </script>
+
+    <!-- Reveal page transition: Semplice-style cover panel driven by ClientRouter events -->
+    <script>
+      if (!window.__revealInit) {
+        window.__revealInit = true;
+
+        const COVER_MS = 500;
+        const UNCOVER_MS = 550;
+        const EASE = 'cubic-bezier(0.65, 0, 0.35, 1)';
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        function getPanel() {
+          return document.getElementById('reveal-panel') as HTMLElement | null;
+        }
+
+        function wait(ms: number) {
+          return new Promise((r) => window.setTimeout(r, ms));
+        }
+
+        // Cover in: panel slides up from below into full-viewport position
+        function coverIn() {
+          const p = getPanel();
+          if (!p) return Promise.resolve();
+          if (prefersReducedMotion) {
+            p.style.transition = 'opacity 160ms ease';
+            p.style.transform = 'translateY(0%)';
+            p.style.opacity = '1';
+            return wait(160);
+          }
+          p.style.transition = `transform ${COVER_MS}ms ${EASE}`;
+          p.style.transform = 'translateY(0%)';
+          return wait(COVER_MS);
+        }
+
+        // Uncover: panel continues upward past viewport top, revealing new page
+        function uncover() {
+          const p = getPanel();
+          if (!p) return Promise.resolve();
+          if (prefersReducedMotion) {
+            p.style.transition = 'opacity 160ms ease';
+            p.style.opacity = '0';
+            return wait(160).then(() => {
+              p.style.transition = 'none';
+              p.style.transform = 'translateY(101%)';
+              p.style.opacity = '1';
+            });
+          }
+          p.style.transition = `transform ${UNCOVER_MS}ms ${EASE}`;
+          p.style.transform = 'translateY(-101%)';
+          return wait(UNCOVER_MS + 20).then(() => {
+            // Reset panel below viewport for next transition (no transition so it snaps)
+            p.style.transition = 'none';
+            p.style.transform = 'translateY(101%)';
+          });
+        }
+
+        // Intercept preparation: run cover animation in parallel with the fetch,
+        // so the swap happens only after BOTH cover + fetch are done.
+        document.addEventListener('astro:before-preparation', (event: any) => {
+          const originalLoader = event.loader;
+          event.loader = async () => {
+            await Promise.all([coverIn(), originalLoader()]);
+          };
+        });
+
+        // After DOM swap: reset scroll, reset body bg color (home page cards mutate it),
+        // then uncover the new page on the next frame.
+        document.addEventListener('astro:after-swap', () => {
+          window.scrollTo(0, 0);
+          window.__lenis?.scrollTo(0, { immediate: true });
+          document.body.style.backgroundColor = '';
+          requestAnimationFrame(() => uncover());
+        });
+      }
     </script>
 
     <!-- Scroll reveal -->
     <script>
-      const revealObserver = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('in-view');
-              revealObserver.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.18 }
-      );
+      function initScrollReveal() {
+        const revealObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                revealObserver.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.18 }
+        );
 
-      document.querySelectorAll('section:not([data-no-reveal])').forEach((el) => {
-        el.classList.add('scroll-reveal');
-        revealObserver.observe(el);
-      });
+        document.querySelectorAll('section:not([data-no-reveal])').forEach((el) => {
+          el.classList.add('scroll-reveal');
+          revealObserver.observe(el);
+        });
+
+        // Disconnect on navigation so we don't leak observers
+        document.addEventListener('astro:before-swap', () => revealObserver.disconnect(), { once: true });
+      }
+
+      // Runs on initial page load AND after every ClientRouter navigation
+      document.addEventListener('astro:page-load', initScrollReveal);
     </script>
 
     <!-- Custom cursor: smooth-tracking white circle that scales on interactive hover -->
@@ -125,7 +224,8 @@ import '../styles/global.css';
       const cursor = document.getElementById('cursor');
       const supportsFinePointer = window.matchMedia('(pointer: fine)').matches;
 
-      if (cursor && supportsFinePointer) {
+      if (cursor && supportsFinePointer && !window.__cursorInit) {
+        window.__cursorInit = true;
         let targetX = window.innerWidth / 2;
         let targetY = window.innerHeight / 2;
         let currentX = targetX;
@@ -185,45 +285,49 @@ import '../styles/global.css';
 
     <!-- Menu toggle script (Vite-bundled) -->
     <script>
-      const toggle = document.getElementById('menu-toggle');
-      const overlay = document.getElementById('menu-overlay');
+      function initMenuToggle() {
+        const toggle = document.getElementById('menu-toggle');
+        const overlay = document.getElementById('menu-overlay');
 
-      if (toggle && overlay) {
-        const links = Array.from(overlay.querySelectorAll('a'));
-        let isOpen = false;
+        if (toggle && overlay) {
+          const links = Array.from(overlay.querySelectorAll('a'));
+          let isOpen = false;
 
-        function openMenu() {
-          isOpen = true;
-          toggle.classList.add('is-open');
-          overlay.classList.remove('opacity-0', 'pointer-events-none');
-          overlay.classList.add('opacity-100', 'pointer-events-auto');
-          links.forEach((link, i) => {
-            setTimeout(() => {
-              link.classList.remove('opacity-0', 'translate-y-6');
-              link.classList.add('opacity-100', 'translate-y-0');
-            }, 80 + i * 80);
+          function openMenu() {
+            isOpen = true;
+            toggle.classList.add('is-open');
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+            overlay.classList.add('opacity-100', 'pointer-events-auto');
+            links.forEach((link, i) => {
+              setTimeout(() => {
+                link.classList.remove('opacity-0', 'translate-y-6');
+                link.classList.add('opacity-100', 'translate-y-0');
+              }, 80 + i * 80);
+            });
+          }
+
+          function closeMenu() {
+            isOpen = false;
+            toggle.classList.remove('is-open');
+            overlay.classList.remove('opacity-100', 'pointer-events-auto');
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+            links.forEach((link) => {
+              link.classList.remove('opacity-100', 'translate-y-0');
+              link.classList.add('opacity-0', 'translate-y-6');
+            });
+          }
+
+          toggle.addEventListener('click', () => {
+            isOpen ? closeMenu() : openMenu();
           });
-        }
 
-        function closeMenu() {
-          isOpen = false;
-          toggle.classList.remove('is-open');
-          overlay.classList.remove('opacity-100', 'pointer-events-auto');
-          overlay.classList.add('opacity-0', 'pointer-events-none');
           links.forEach((link) => {
-            link.classList.remove('opacity-100', 'translate-y-0');
-            link.classList.add('opacity-0', 'translate-y-6');
+            link.addEventListener('click', closeMenu);
           });
         }
-
-        toggle.addEventListener('click', () => {
-          isOpen ? closeMenu() : openMenu();
-        });
-
-        links.forEach((link) => {
-          link.addEventListener('click', closeMenu);
-        });
       }
+
+      document.addEventListener('astro:page-load', initMenuToggle);
     </script>
 
   </body>

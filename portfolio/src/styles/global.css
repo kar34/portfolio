@@ -18,6 +18,19 @@
   background-color: rgba(255, 255, 255, 0.35);
   color: inherit;
 }
+
+/* ── Reveal page transition panel ──
+   A full-viewport overlay that slides up to cover the page during navigation,
+   then continues out the top to reveal the new page. Semplice "Reveal"-style. */
+#reveal-panel {
+  position: fixed;
+  inset: 0;
+  background-color: #000000;
+  z-index: 9000;
+  transform: translateY(101%);
+  pointer-events: none;
+  will-change: transform;
+}
 /* Project page hero image — page-load animation */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(24px) scale(0.99); }

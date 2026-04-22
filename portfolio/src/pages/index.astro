@@ -105,7 +105,7 @@ import WorkCards from '../components/WorkCards.astro';
   <section id="work-section" data-no-reveal class="relative pt-48 md:pt-0 pb-32 md:pb-28 px-[8vw]">
 
     <!-- Sticky full-bleed WORK heading — tiles scroll on top of it -->
-    <div class="-mx-[8vw] md:sticky md:top-0 z-0">
+    <div id="work-heading" class="-mx-[8vw] md:sticky md:top-0 z-0">
       <h2 class="text-[22vw] md:text-[20vw] font-semibold uppercase tracking-tighter leading-none text-center">
         Work
       </h2>
@@ -138,99 +138,150 @@ import WorkCards from '../components/WorkCards.astro';
 </style>
 
 <script>
-  // Clear fadeUp animation fill once entrance finishes, so scroll-driven
-  // transforms can override (CSS animation fill beats inline styles in cascade).
-  document.querySelectorAll('.hero-1, .hero-2, .hero-3, .hero-4').forEach((el) => {
-    el.addEventListener('animationend', () => {
-      (el as HTMLElement).style.animation = 'none';
-    }, { once: true });
-  });
+  function initHeroScroll() {
+    // Only runs on the home page — bails out if the hero DOM isn't present
+    const heroWrapper   = document.querySelector('.hero-wrapper')   as HTMLElement | null;
+    if (!heroWrapper) return;
 
-  // Scroll-driven hero exit animations
-  // Progress = scrollY / scrollRange. scrollRange = wrapper height − hero height.
-  // Reaches 1 exactly when the sticky section releases.
-  const heroWrapper   = document.querySelector('.hero-wrapper')   as HTMLElement | null;
-  const heroSection   = document.querySelector('.hero-section')   as HTMLElement | null;
-  const h1El          = document.querySelector('.hero-1')         as HTMLElement | null;
-  const locationEl    = document.querySelector('.hero-location')  as HTMLElement | null;
-  const productDesEl  = document.querySelector('.hero-3')         as HTMLElement | null;
-  const socialDesktop = document.querySelector('.hero-social')    as HTMLElement | null;
-  const socialMobile  = document.querySelector('.hero-4')         as HTMLElement | null;
-  const portraitEl    = document.querySelector('.hero-portrait')  as HTMLElement | null;
+    const heroSection   = document.querySelector('.hero-section')   as HTMLElement | null;
+    const h1El          = document.querySelector('.hero-1')         as HTMLElement | null;
+    const locationEl    = document.querySelector('.hero-location')  as HTMLElement | null;
+    const productDesEl  = document.querySelector('.hero-3')         as HTMLElement | null;
+    const socialDesktop = document.querySelector('.hero-social')    as HTMLElement | null;
+    const socialMobile  = document.querySelector('.hero-4')         as HTMLElement | null;
+    const portraitEl    = document.querySelector('.hero-portrait')  as HTMLElement | null;
 
-  function onHeroScroll() {
-    const wrapperH   = heroWrapper?.offsetHeight ?? window.innerHeight * 1.5;
-    const heroH      = heroSection?.offsetHeight ?? window.innerHeight;
-    const scrollRange = Math.max(1, wrapperH - heroH);
-    const progress   = Math.min(1, Math.max(0, window.scrollY / scrollRange));
-    const opacity    = Math.max(0, 1 - progress * 1.2);
+    // Scope the scroll listener to this page's lifetime — aborted on next nav
+    const controller = new AbortController();
+    document.addEventListener('astro:before-swap', () => controller.abort(), { once: true });
 
-    if (h1El) {
-      h1El.style.transform = `translateX(${-progress * 120}vw)`;
-      h1El.style.opacity   = String(opacity);
-    }
-    if (locationEl) {
-      locationEl.style.transform = `translateX(${-progress * 120}vw)`;
-      locationEl.style.opacity   = String(opacity);
-    }
-    if (productDesEl) {
-      productDesEl.style.transform = `translateX(${progress * 120}vw)`;
-      productDesEl.style.opacity   = String(opacity);
-    }
-    if (socialDesktop) {
-      socialDesktop.style.transform = `translateX(${progress * 120}vw)`;
-      socialDesktop.style.opacity   = String(opacity);
-    }
-    if (socialMobile) {
-      socialMobile.style.transform = `translateX(${progress * 120}vw)`;
-      socialMobile.style.opacity   = String(opacity);
-    }
-    if (portraitEl) {
-      if (window.innerWidth >= 768) {
-        portraitEl.style.transform = `scale(${0.9 + progress * 0.35})`;
-      } else {
-        portraitEl.style.transform = 'scale(1)';
+    // Clear fadeUp animation fill once entrance finishes, so scroll-driven
+    // transforms can override (CSS animation fill beats inline styles in cascade).
+    document.querySelectorAll('.hero-1, .hero-2, .hero-3, .hero-4').forEach((el) => {
+      el.addEventListener('animationend', () => {
+        (el as HTMLElement).style.animation = 'none';
+      }, { once: true });
+    });
+
+    function onHeroScroll() {
+      const wrapperH   = heroWrapper?.offsetHeight ?? window.innerHeight * 1.5;
+      const heroH      = heroSection?.offsetHeight ?? window.innerHeight;
+      const scrollRange = Math.max(1, wrapperH - heroH);
+      const progress   = Math.min(1, Math.max(0, window.scrollY / scrollRange));
+      const opacity    = Math.max(0, 1 - progress * 1.2);
+
+      if (h1El) {
+        h1El.style.transform = `translateX(${-progress * 120}vw)`;
+        h1El.style.opacity   = String(opacity);
+      }
+      if (locationEl) {
+        locationEl.style.transform = `translateX(${-progress * 120}vw)`;
+        locationEl.style.opacity   = String(opacity);
+      }
+      if (productDesEl) {
+        productDesEl.style.transform = `translateX(${progress * 120}vw)`;
+        productDesEl.style.opacity   = String(opacity);
+      }
+      if (socialDesktop) {
+        socialDesktop.style.transform = `translateX(${progress * 120}vw)`;
+        socialDesktop.style.opacity   = String(opacity);
+      }
+      if (socialMobile) {
+        socialMobile.style.transform = `translateX(${progress * 120}vw)`;
+        socialMobile.style.opacity   = String(opacity);
+      }
+      if (portraitEl) {
+        if (window.innerWidth >= 768) {
+          portraitEl.style.transform = `scale(${0.9 + progress * 0.35})`;
+        } else {
+          portraitEl.style.transform = 'scale(1)';
+        }
       }
     }
+
+    window.addEventListener('scroll', onHeroScroll, { passive: true, signal: controller.signal });
+    onHeroScroll(); // set initial state (photo at 90% scale)
   }
 
-  window.addEventListener('scroll', onHeroScroll, { passive: true });
-  onHeroScroll(); // set initial state (photo at 90% scale)
+  document.addEventListener('astro:page-load', initHeroScroll);
 </script>
 
 <script>
-  const cardColors: Record<string, string> = {
-    'linkedin-video-card': '#7b61ff',
-    'reactions-card':      '#f5bb5c',
-    'nbf-card':            '#568ddb',
-  };
+  function initCardColors() {
+    const cardColors: Record<string, string> = {
+      'linkedin-video-card': '#7b61ff',
+      'reactions-card':      '#f5bb5c',
+      'nbf-card':            '#568ddb',
+    };
+    const cardIds = Object.keys(cardColors);
 
-  document.body.style.transition = 'background-color 0.6s ease';
+    // Only runs if the card elements exist on this page
+    if (!document.getElementById(cardIds[0])) return;
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          document.body.style.backgroundColor = cardColors[(entry.target as HTMLElement).id];
-        } else {
-          // Only reset to black if no other card is currently visible
-          const anyVisible = Object.keys(cardColors).some((id) => {
-            const el = document.getElementById(id);
-            if (!el || el === entry.target) return false;
-            const rect = el.getBoundingClientRect();
-            return rect.top < window.innerHeight && rect.bottom > 0;
-          });
-          if (!anyVisible) {
-            document.body.style.backgroundColor = '#000000';
-          }
+    document.body.style.transition = 'background-color 0.6s ease';
+
+    const controller = new AbortController();
+    document.addEventListener('astro:before-swap', () => controller.abort(), { once: true });
+
+    // Card-color logic:
+    //  - Active zone starts the moment the WORK heading locks at viewport top
+    //    (its getBoundingClientRect().top <= 0).
+    //  - Active zone ends when the last card's bottom has fully left the top.
+    //  - Inside the active zone, pick the card whose center is closest to
+    //    viewport center — colors hand off directly (purple → yellow → blue)
+    //    with the body's 0.6s CSS transition smoothing each step.
+    function updateBg() {
+      const vh = window.innerHeight;
+      const viewportCenter = vh / 2;
+
+      const workHeading = document.getElementById('work-heading');
+      const lastEl      = document.getElementById(cardIds[cardIds.length - 1]);
+      if (!workHeading || !lastEl) {
+        document.body.style.backgroundColor = '#000000';
+        return;
+      }
+
+      const headingLocked = workHeading.getBoundingClientRect().top <= 0;
+      const lastCardStillInView = lastEl.getBoundingClientRect().bottom >= 0;
+      const active = headingLocked && lastCardStillInView;
+
+      if (!active) {
+        document.body.style.backgroundColor = '#000000';
+        return;
+      }
+
+      let bestId: string | null = null;
+      let bestDist = Infinity;
+
+      cardIds.forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const cardCenter = rect.top + rect.height / 2;
+        const dist = Math.abs(cardCenter - viewportCenter);
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestId = id;
         }
       });
-    },
-    { threshold: 0.45 }
-  );
 
-  Object.keys(cardColors).forEach((id) => {
-    const el = document.getElementById(id);
-    if (el) observer.observe(el);
-  });
+      document.body.style.backgroundColor = bestId ? cardColors[bestId] : '#000000';
+    }
+
+    let rafPending = false;
+    function onScroll() {
+      if (rafPending) return;
+      rafPending = true;
+      requestAnimationFrame(() => {
+        rafPending = false;
+        updateBg();
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true, signal: controller.signal });
+    window.addEventListener('resize', onScroll, { passive: true, signal: controller.signal });
+    updateBg(); // set initial state
+  }
+
+  document.addEventListener('astro:page-load', initCardColors);
 </script>
