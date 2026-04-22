@@ -3,10 +3,11 @@ import Layout from './Layout.astro';
 
 interface Props {
   title: string;
+  subtitle?: string;
   pageTitle?: string;
 }
 
-const { title, pageTitle } = Astro.props;
+const { title, subtitle, pageTitle } = Astro.props;
 ---
 <Layout title={pageTitle ?? `${title} - Kenny Raymond`} hideFooter={true}>
 
@@ -15,6 +16,11 @@ const { title, pageTitle } = Astro.props;
     <h1 class="text-[4.25rem] md:text-[7.78rem] font-bold text-white leading-tight md:leading-none">
       {title}
     </h1>
+    {subtitle && (
+      <p class="mt-6 md:mt-8 text-[1.5rem] md:text-[2.25rem] font-medium text-white/80 leading-snug max-w-[60ch]">
+        {subtitle}
+      </p>
+    )}
   </section>
 
   <slot />
@@ -76,7 +82,7 @@ const { title, pageTitle } = Astro.props;
 
     // Attach to every <main> image
     document.querySelectorAll<HTMLImageElement>('main img').forEach((img) => {
-      img.style.cursor = 'zoom-in';
+      img.classList.add('img-clickable');
       img.addEventListener('click', () => {
         openLightbox(img.src);
       });

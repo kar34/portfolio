@@ -20,6 +20,9 @@ import '../styles/global.css';
   </head>
   <body>
 
+    <!-- Custom cursor (desktop only) -->
+    <div id="cursor" aria-hidden="true"></div>
+
     <!-- Navigation -->
     <nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-[8vw] py-5">
       <a href="/" aria-label="Home">
@@ -115,6 +118,69 @@ import '../styles/global.css';
         el.classList.add('scroll-reveal');
         revealObserver.observe(el);
       });
+    </script>
+
+    <!-- Custom cursor: smooth-tracking white circle that scales on interactive hover -->
+    <script>
+      const cursor = document.getElementById('cursor');
+      const supportsFinePointer = window.matchMedia('(pointer: fine)').matches;
+
+      if (cursor && supportsFinePointer) {
+        let targetX = window.innerWidth / 2;
+        let targetY = window.innerHeight / 2;
+        let currentX = targetX;
+        let currentY = targetY;
+        let visible = false;
+
+        window.addEventListener('mousemove', (e) => {
+          targetX = e.clientX;
+          targetY = e.clientY;
+          if (!visible) {
+            visible = true;
+            cursor.classList.add('is-visible');
+          }
+        });
+
+        window.addEventListener('mouseleave', () => {
+          visible = false;
+          cursor.classList.remove('is-visible');
+        });
+
+        window.addEventListener('mouseenter', () => {
+          visible = true;
+          cursor.classList.add('is-visible');
+        });
+
+        function tick() {
+          // Lerp for silky, hollyrankin.com-style follow
+          currentX += (targetX - currentX) * 0.2;
+          currentY += (targetY - currentY) * 0.2;
+          cursor.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) translate(-50%, -50%)`;
+          requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+
+        // Grow on interactive targets via event delegation so dynamic DOM works too
+        const hoverSelector = 'a, button, [role="button"], input[type="submit"], input[type="button"], label[for], .img-clickable';
+
+        document.addEventListener('mouseover', (e) => {
+          const target = e.target as HTMLElement;
+          if (target && target.closest && target.closest(hoverSelector)) {
+            cursor.classList.add('is-hover');
+          }
+        });
+
+        document.addEventListener('mouseout', (e) => {
+          const target = e.target as HTMLElement;
+          if (target && target.closest && target.closest(hoverSelector)) {
+            cursor.classList.remove('is-hover');
+          }
+        });
+
+        // Hide on press, restore on release — subtle, matches premium feel
+        window.addEventListener('mousedown', () => cursor.classList.add('is-down'));
+        window.addEventListener('mouseup', () => cursor.classList.remove('is-down'));
+      }
     </script>
 
     <!-- Menu toggle script (Vite-bundled) -->

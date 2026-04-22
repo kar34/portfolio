@@ -8,6 +8,16 @@
  * Global base styles for Kenny Raymond Portfolio
  * Design system: pure black bg, pure white text, Poppins font, no visible scrollbar
  */
+
+/* ── Text selection highlight ── */
+::selection {
+  background-color: rgba(255, 255, 255, 0.35);
+  color: inherit;
+}
+::-moz-selection {
+  background-color: rgba(255, 255, 255, 0.35);
+  color: inherit;
+}
 /* Project page hero image — page-load animation */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(24px) scale(0.99); }
@@ -50,6 +60,26 @@
 .parallax-img {
   transform-origin: bottom center;
   will-change: transform;
+  transition: filter 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ── Project card hover: luminescent glow + gentle scale ── */
+.parallax-card {
+  transition:
+    transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    box-shadow 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+@media (pointer: fine) {
+  .parallax-card:hover {
+    transform: scale(1.04);
+    box-shadow: 0 0 180px 30px rgba(255, 255, 255, 0.35);
+  }
+  /* When any card is being hovered, dim the others — matches menu/hero spotlight */
+  :has(> .parallax-card:hover) > .parallax-card:not(:hover) {
+    opacity: 0.3;
+    transition: opacity 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
 }
 
 /* ── Hamburger → X morph ── */
@@ -92,6 +122,52 @@
 #menu-overlay:has(a:hover) a:not(:hover) {
   opacity: 0.15;
   transition: opacity 0.25s ease;
+}
+
+/* ── Custom cursor (desktop only) ── */
+@media (pointer: fine) {
+  html,
+  body {
+    cursor: none;
+  }
+  a,
+  button,
+  [role="button"],
+  input,
+  textarea,
+  select,
+  label,
+  .img-clickable {
+    cursor: none;
+  }
+
+  #cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 9999px;
+    background-color: #ffffff;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+    transition: width 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+                height 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+                opacity 0.3s ease;
+    will-change: transform, width, height;
+  }
+  #cursor.is-visible {
+    opacity: 1;
+  }
+  #cursor.is-hover {
+    width: 58px;
+    height: 58px;
+  }
+  #cursor.is-down {
+    width: 8px;
+    height: 8px;
+  }
 }
 
 @layer base {
