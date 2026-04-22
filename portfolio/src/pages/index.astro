@@ -92,8 +92,10 @@ import WorkCards from '../components/WorkCards.astro';
   </section>
   </div><!-- /hero wrapper -->
 
-  <!-- About Section — pulled up so heading meets photo bottom on sticky release -->
-  <section class="relative z-10 bg-black -mt-[30svh] md:-mt-[35svh] pt-[8svh] md:pt-[6svh] pb-8 md:pb-[28rem] px-[8vw]">
+  <!-- About Section — pulled up so heading meets photo bottom on sticky release.
+       Mobile: -mt stays conservative enough to clear the portrait bottom (no crop);
+       pt is small so the heading sits close to the section's top edge. -->
+  <section class="relative z-10 bg-black -mt-[35svh] md:-mt-[35svh] pt-[3svh] md:pt-[6svh] pb-8 md:pb-[28rem] px-[8vw]">
     <h2 class="text-[22vw] md:text-7xl font-semibold uppercase tracking-tight text-center">
       About
     </h2>
@@ -198,7 +200,7 @@ import WorkCards from '../components/WorkCards.astro';
       // Desktop: text flies to the sides (horizontal clear).
       // Mobile: text fades with a small upward drift that tracks the swipe
       // direction — horizontal motion reads as disconnected on narrow screens.
-      const mobileDriftPx = -progress * 100; // 100px total upward drift
+      const mobileDriftPx = -progress * 80; // 80px total upward drift
 
       if (h1El) {
         h1El.style.transform = isMobile
