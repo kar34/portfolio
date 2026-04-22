@@ -1,0 +1,154 @@
+---
+import Layout from './Layout.astro';
+
+interface Props {
+  title: string;
+  pageTitle?: string;
+}
+
+const { title, pageTitle } = Astro.props;
+---
+<Layout title={pageTitle ?? `${title} - Kenny Raymond`} hideFooter={true}>
+
+  <!-- Page title -->
+  <section data-no-reveal class="project-title px-3 md:px-36 lg:px-64 pt-32 md:pt-24 pb-10 md:pb-20">
+    <h1 class="text-[4.25rem] md:text-[7.78rem] font-bold text-white leading-tight md:leading-none">
+      {title}
+    </h1>
+  </section>
+
+  <slot />
+
+  <!-- Back link -->
+  <section class="flex justify-center py-16 md:py-24">
+    <a href="/work" class="text-white text-[2.5rem] md:text-[2.8125rem] font-medium">
+      ← More Projects
+    </a>
+  </section>
+
+  <!-- Mobile image lightbox -->
+  <div id="lightbox" class="fixed inset-0 bg-black z-[100] hidden items-center justify-center">
+    <button id="lightbox-close" aria-label="Close lightbox" class="absolute top-4 right-4 w-12 h-12 flex items-center justify-center text-white text-3xl bg-white/15 rounded-full z-10 leading-none">×</button>
+    <img id="lightbox-img" alt="" class="max-w-full max-h-full object-contain origin-center" style="touch-action: none;" />
+  </div>
+
+</Layout>
+
+<script>
+  const lb      = document.getElementById('lightbox')       as HTMLElement | null;
+  const lbImg   = document.getElementById('lightbox-img')   as HTMLImageElement | null;
+  const lbClose = document.getElementById('lightbox-close') as HTMLButtonElement | null;
+
+  if (lb && lbImg && lbClose) {
+    const isMobile = () => window.innerWidth < 768;
+
+    let scale = 1, tx = 0, ty = 0;
+    let startDist = 0, startScale = 1;
+    let startMidX = 0, startMidY = 0, startTx = 0, startTy = 0;
+
+    function apply() {
+      if (!lbImg) return;
+      lbImg.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+    }
+
+    function reset() {
+      scale = 1; tx = 0; ty = 0;
+      apply();
+    }
+
+    function openLightbox(src: string) {
+      if (!lb || !lbImg) return;
+      lbImg.src = src;
+      lb.classList.remove('hidden');
+      lb.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+      reset();
+    }
+
+    function closeLightbox() {
+      if (!lb || !lbImg) return;
+      lb.classList.add('hidden');
+      lb.classList.remove('flex');
+      lbImg.src = '';
+      reset();
+      document.body.style.overflow = '';
+    }
+
+    // Attach to every <main> image
+    document.querySelectorAll<HTMLImageElement>('main img').forEach((img) => {
+      img.style.cursor = 'zoom-in';
+      img.addEventListener('click', () => {
+        openLightbox(img.src);
+      });
+    });
+
+    lbClose.addEventListener('click', closeLightbox);
+    lb.addEventListener('click', (e) => {
+      if (e.target === lb) closeLightbox();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !lb.classList.contains('hidden')) closeLightbox();
+    });
+
+    // Pinch-to-zoom + pan
+    lbImg.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        startDist  = Math.hypot(dx, dy);
+        startScale = scale;
+        startMidX  = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        startMidY  = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        startTx    = tx;
+        startTy    = ty;
+      } else if (e.touches.length === 1 && scale > 1) {
+        startMidX = e.touches[0].clientX;
+        startMidY = e.touches[0].clientY;
+        startTx   = tx;
+        startTy   = ty;
+      }
+    }, { passive: false });
+
+    lbImg.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const dist = Math.hypot(dx, dy);
+        scale = Math.max(1, Math.min(5, startScale * (dist / startDist)));
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        tx = startTx + (midX - startMidX);
+        ty = startTy + (midY - startMidY);
+        apply();
+      } else if (e.touches.length === 1 && scale > 1) {
+        e.preventDefault();
+        tx = startTx + (e.touches[0].clientX - startMidX);
+        ty = startTy + (e.touches[0].clientY - startMidY);
+        apply();
+      }
+    }, { passive: false });
+
+    lbImg.addEventListener('touchend', (e) => {
+      if (e.touches.length === 0 && scale <= 1) reset();
+    });
+  }
+</script>
+
+<style>
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(24px) scale(0.99);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  .project-title {
+    animation: fadeUp 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    animation-delay: 0.1s;
+  }
+</style>

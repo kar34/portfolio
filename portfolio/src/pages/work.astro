@@ -6,12 +6,56 @@ import WorkCards from '../components/WorkCards.astro';
 <Layout title="Work - Kenny Raymond">
 
   <!-- Work Section -->
-  <section class="pt-28 py-20 md:py-28 px-6 md:px-10">
-    <h2 class="text-[20vw] font-semibold uppercase tracking-tighter leading-none">
-      Work
-    </h2>
+  <section data-no-reveal class="relative pt-28 pb-20 md:pb-28 px-6 md:px-[20vw]">
 
-    <WorkCards />
+    <!-- Sticky full-bleed WORK heading — tiles scroll on top of it -->
+    <div class="-mx-6 md:-mx-[20vw] md:sticky md:top-0 z-0">
+      <h2 class="text-[20vw] font-semibold uppercase tracking-tighter leading-none text-center">
+        Work
+      </h2>
+    </div>
+
+    <!-- Cards — higher z-index so they layer over the heading -->
+    <div class="relative z-10 mt-16 md:mt-24">
+      <WorkCards />
+    </div>
+
   </section>
 
 </Layout>
+
+<script>
+  const cardColors: Record<string, string> = {
+    'linkedin-video-card': '#7b61ff',
+    'reactions-card':      '#f5bb5c',
+    'nbf-card':            '#568ddb',
+  };
+
+  document.body.style.transition = 'background-color 0.6s ease';
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          document.body.style.backgroundColor = cardColors[(entry.target as HTMLElement).id];
+        } else {
+          const anyVisible = Object.keys(cardColors).some((id) => {
+            const el = document.getElementById(id);
+            if (!el || el === entry.target) return false;
+            const rect = el.getBoundingClientRect();
+            return rect.top < window.innerHeight && rect.bottom > 0;
+          });
+          if (!anyVisible) {
+            document.body.style.backgroundColor = '#000000';
+          }
+        }
+      });
+    },
+    { threshold: 0.15 }
+  );
+
+  Object.keys(cardColors).forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+</script>

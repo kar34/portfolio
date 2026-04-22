@@ -1,9 +1,52 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import ProjectLayout from '../../layouts/ProjectLayout.astro';
 ---
-<Layout title="LinkedIn Reactions - Kenny Raymond">
-  <section class="pt-28 px-10 md:px-20 py-20">
-    <p class="text-white/40 text-sm uppercase tracking-widest">Coming soon</p>
-    <h1 class="text-5xl md:text-7xl font-semibold uppercase tracking-tight mt-4">LinkedIn Reactions</h1>
+<ProjectLayout title="Reactions">
+
+  <!-- Hero image -->
+  <section data-no-reveal class="project-hero-section px-3 md:px-36 lg:px-64">
+    <img
+      src="/Reactionshero.png"
+      alt="LinkedIn Reactions hero"
+      class="w-full h-auto rounded-[48px]"
+    />
   </section>
-</Layout>
+
+  <!-- Overview -->
+  <section class="px-3 md:px-36 lg:px-64 py-14 md:py-20">
+    <h2 class="text-[2.8rem] md:text-[3.4rem] leading-[1] md:leading-[1.1] font-semibold text-white mt-4 mb-3 max-w-3xl mx-auto">Overview</h2>
+    <p class="text-white text-2xl md:text-[1.69rem] leading-snug mx-auto mb-6 max-w-3xl">
+      While the reaction menu was being migrated to a new tech stack, I carved out scope for quick visual and interaction design improvements. I added subtle motion by scaling icons in the active state, making interactions feel more responsive and tactile. Visually, I shifted to a circled fill style for better balance and clarity.
+    </p>
+    <p class="text-white text-2xl md:text-[1.69rem] leading-snug mx-auto max-w-3xl">
+      With more time, I would have advocated for a modernized visual language to better align the icons with the overall product aesthetic.
+    </p>
+  </section>
+
+  <!-- Before / After image -->
+  <section class="px-0 md:px-0 py-10 md:py-14">
+    <img
+      src="/reactionsbeforeafter.png"
+      alt="LinkedIn Reactions before and after comparison"
+      class="w-full h-[45vh] md:h-auto object-cover object-center rounded-none md:rounded-[40px]"
+    />
+  </section>
+
+  <!-- Impact -->
+  <section class="px-3 md:px-36 lg:px-64 py-14 md:py-20">
+    <h2 class="text-[2.8rem] md:text-[3.4rem] leading-[1] md:leading-[1.1] font-semibold text-white mt-4 mb-3 max-w-3xl mx-auto">Impact</h2>
+    <p class="text-white text-2xl md:text-[1.69rem] leading-snug mx-auto max-w-3xl">
+      While the improvements were mainly targeting design polish, we also saw a modest increase in reactions usage. It turns out good craft is good for business too! The work also got some love from the motion design community on LinkedIn <a href="https://www.linkedin.com/in/kennyraymond/" target="_blank" rel="noopener" class="underline">here</a>.
+    </p>
+  </section>
+
+  <!-- Reaction motion GIF -->
+  <section class="px-0 md:px-0 py-10 md:py-14">
+    <img
+      src="/reactionMotion.gif"
+      alt="LinkedIn Reactions interaction animation"
+      class="w-full h-[70vh] md:h-auto object-cover object-center rounded-none md:rounded-[40px]"
+    />
+  </section>
+
+</ProjectLayout>

@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
 
 @theme {
   --font-poppins: 'Poppins', sans-serif;
@@ -9,6 +8,92 @@
  * Global base styles for Kenny Raymond Portfolio
  * Design system: pure black bg, pure white text, Poppins font, no visible scrollbar
  */
+/* Project page hero image — page-load animation */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px) scale(0.99); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+.project-hero-section {
+  animation: fadeUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  animation-delay: 0.25s;
+}
+
+/* Scroll reveal — applied globally via IntersectionObserver in Layout.astro */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition-delay: 0.1s;
+}
+.scroll-reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Hero exit animations: GPU compositing hints ── */
+.hero-1,
+.hero-location,
+.hero-3,
+.hero-social,
+.hero-4 {
+  will-change: transform;
+}
+
+/* ── Hero portrait: stays in place while text exits (section stickiness achieves this;
+      position:sticky here is intentional but blocked by parent overflow:hidden — no-op) ── */
+.hero-portrait {
+  position: sticky;
+  top: calc(50vh - 97.5px);
+}
+
+/* ── Parallax zoom for project cards ── */
+.parallax-img {
+  transform-origin: bottom center;
+  will-change: transform;
+}
+
+/* ── Hamburger → X morph ── */
+#line-top,
+#line-bottom {
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+#menu-toggle svg {
+  overflow: visible;
+}
+#menu-toggle.is-open #line-top {
+  transform: rotate(45deg) translateY(4px);
+}
+#menu-toggle.is-open #line-bottom {
+  transform: rotate(-45deg) translateY(-4px);
+}
+
+/* ── Hero social icon hover spotlight ── */
+/* Desktop: dim name, location, photo, title, and non-hovered icons */
+.hero-section:has(.hero-social a:hover) .hero-1,
+.hero-section:has(.hero-social a:hover) .hero-location,
+.hero-section:has(.hero-social a:hover) .hero-portrait,
+.hero-section:has(.hero-social a:hover) .hero-3,
+.hero-section:has(.hero-social a:hover) .hero-social a:not(:hover) {
+  opacity: 0.5 !important;
+  transition: opacity 0.25s ease;
+}
+/* Mobile: dim everything except the hovered icon */
+.hero-section:has(.hero-4 a:hover) .hero-1,
+.hero-section:has(.hero-4 a:hover) .hero-2,
+.hero-section:has(.hero-4 a:hover) .hero-3,
+.hero-section:has(.hero-4 a:hover) .hero-4 a:not(:hover) {
+  opacity: 0.5 !important;
+  transition: opacity 0.25s ease;
+}
+
+/* ── Menu link hover spotlight ── */
+#menu-overlay:has(a:hover) a:not(:hover) {
+  opacity: 0.15;
+  transition: opacity 0.25s ease;
+}
+
 @layer base {
   html {
     font-family: 'Poppins', sans-serif;

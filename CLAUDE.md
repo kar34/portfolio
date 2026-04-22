@@ -116,12 +116,77 @@ Read these before writing any code. They are the source of truth for layout, spa
 - Use GSD for phase planning — keep phases small and executable
 - Build and verify one page at a time against the Mocks/
 - Mobile-first responsive — check HomeMobile.jpeg and other mobile mocks
-- No animations in the initial build (Lenis smooth scroll is fine, but no scroll-triggered animations or hover transitions)
 - Use Astro's file-based routing — one .astro file per page, one layout component
 - Copy assets from Assets/ into the Astro project's public/ folder
+
+## Local Dev Server
+- The dev server runs at **http://localhost:4321**
+- After every change, tell the user the exact URL to preview (e.g. `http://localhost:4321/about`)
+
+## Implemented Interactions & Animations
+
+### Hamburger → X Morph (`Layout.astro` + `global.css`)
+- SVG lines have `id="line-top"` and `id="line-bottom"`
+- CSS uses `transform-box: view-box; transform-origin: 50% 50%` so both lines rotate around the SVG center (14, 6)
+- Open state: `#line-top` rotates `45deg translateY(4px)`, `#line-bottom` rotates `-45deg translateY(-4px)`
+- SVG needs `overflow: visible` since X arms extend slightly beyond the 12px viewBox height
+- JS adds/removes `is-open` class on `#menu-toggle` to trigger the CSS transition
+- Transform order must be `rotate(θ) translateY(Δ)` — not `translateY translateY rotate`
+
+### Menu Hover Spotlight (`global.css`)
+- Uses CSS `:has(a:hover)` — when any link is hovered, all non-hovered siblings drop to `opacity: 0.15`
+- Selector: `#menu-overlay:has(a:hover) a:not(:hover)`
+
+### Parallax Zoom on Project Cards (`WorkCards.astro` + `global.css`)
+- Card `<a>` elements have class `parallax-card`; inner `<img>` elements have class `parallax-img`
+- `.parallax-img` CSS: `transform-origin: bottom center; will-change: transform`
+- Driven by a `requestAnimationFrame` loop (Lenis-compatible — syncs with smooth scroll every frame)
+- Scale range: `1.0` (card off-screen bottom) → `1.15` (card center reaches viewport center), then holds
+- Math: `progress = clamp(0, 1, (vh - rect.top) / (vh/2 + rect.height/2))`; `scale = 1 + progress * 0.15`
+- Both home page and work page use the shared `WorkCards.astro` component — effect applies to both
+
+### Scroll-Driven Hero Exit Animations (`index.astro` + `global.css`)
+- Hero section is `sticky top-0 h-screen` inside a `hero-wrapper min-h-[150vh]` container
+- Scroll range = wrapper height − hero height (50vh). Progress reaches 1 at sticky release.
+- "Kenny Raymond" (`hero-1`) and "Based in Los Angeles" (`hero-location`) exit left via `translateX(-progress * 120vw)`
+- "Design Leader" (`hero-3`), desktop social icons (`hero-social`), mobile social icons (`hero-4`) exit right via `translateX(+progress * 120vw)`
+- Opacity fades: `Math.max(0, 1 - progress * 1.2)` — hits 0 at ~83% progress
+- Portrait (`hero-portrait`) scales from 0.9 → 1.25 (35% increase) during scroll
+- `will-change: transform` on all animated elements for GPU compositing
+- Hero section has `overflow: hidden` to clip exiting elements
+- **Critical:** CSS `animation-fill-mode: both` on fadeUp entrance animations overrides inline styles. Must clear animation via `animationend` event before scroll transforms can take effect.
+- `onHeroScroll()` called once at script load to set initial portrait scale (0.9)
+
+### Hero Social Icon Hover Spotlight (`global.css`)
+- Uses CSS `:has(a:hover)` — when any social icon is hovered, all other hero content dims to `opacity: 0.5`
+- Desktop: targets `.hero-1`, `.hero-location`, `.hero-portrait`, `.hero-3`, and non-hovered social links
+- Mobile: targets `.hero-1`, `.hero-2`, `.hero-3`, and non-hovered social links in `.hero-4`
+- Uses `!important` on opacity to override inline styles set by the scroll animation script
+
+### Hero Layout — Photo-Centered Grid (`index.astro`)
+- Contact row uses `grid grid-cols-[1fr_auto_1fr]` so the portrait is always at exact horizontal center
+- Portrait has `col-start-2`; "Based in Los Angeles" right-aligns in column 1; social icons left-align in column 3
+- On mobile, hidden flanking elements leave balanced empty 1fr columns — photo stays centered
+
+### About Section Overlap (`index.astro`)
+- About section uses `-mt-[35vh]` to pull up into the hero wrapper area, with `bg-black relative z-10`
+- `pt-[6vh]` padding prevents the About heading from clipping the photo
+- Background color change threshold on work cards set to `0.45` (not `0.15`) to avoid premature color switch
+- Cards container uses `mt-[20rem] md:mt-[28rem]` gap below "WORK" heading for proper timing
+
+### Responsive Hero Sizing (`index.astro`)
+- All hero content uses viewport-relative `clamp()` values instead of fixed sizes
+- Headings: `clamp(2.5rem, 8.5vw, 14rem)`
+- "Based in Los Angeles": `clamp(1rem, 2.5vw, 3rem)`
+- Portrait: `clamp(120px, 13vw, 280px)` width/height
+- Social icons: LinkedIn `clamp(2rem, 3.5vw, 5rem)`, Email/SoundCloud `clamp(2.5rem, 4.5vw, 6rem)`
+- Gaps: `2vw` (rows), `2.5vw` (grid), `1.5vw` (icon spacing)
+
+### Footer (`Layout.astro`)
+- Centered layout: `flex flex-col items-center text-center`
+- Social links have hover effects: `group hover:text-white` with arrow nudge `group-hover:translate-x-0.5 group-hover:-translate-y-0.5`
 
 ## What NOT to Do
 - Do not invent design decisions not visible in the Mocks or live site
 - Do not add features beyond what exists on the current site
-- Do not implement CSS animations or transitions yet
 - Do not upgrade or modify the existing site on Webflow

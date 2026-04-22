@@ -4,27 +4,26 @@ import WorkCards from '../components/WorkCards.astro';
 ---
 
 <Layout>
-  <!-- Hero Section -->
-  <section class="pt-28 pb-16 px-10 md:px-20">
+  <!-- Hero wrapper — 150vh gives the sticky section 50vh of scroll to complete all exits -->
+  <div class="hero-wrapper min-h-[150vh]">
+  <!-- Hero Section — sticky, clips exiting elements via overflow-hidden -->
+  <section data-no-reveal class="hero-section sticky top-0 h-screen flex flex-col items-stretch justify-center gap-[2vw] px-[8vw] overflow-hidden">
 
-    <!-- Name -->
-    <h1 class="text-[clamp(2.5rem,7.5vw,8rem)] font-semibold uppercase tracking-tight leading-none">
+    <!-- Name — left aligned -->
+    <h1 class="hero-1 text-[clamp(2.8rem,8.5vw,14rem)] font-medium uppercase tracking-tight leading-none text-center md:text-left">
       Kenny Raymond
     </h1>
 
-    <!-- Portrait row: email | portrait | social icons — centered and close together -->
-    <div class="mt-8 md:mt-10 flex items-center justify-center gap-8 md:gap-10">
+    <!-- Contact row: photo anchored at dead center, flanking elements fill equal sides -->
+    <div class="hero-2 grid grid-cols-[1fr_auto_1fr] items-center gap-[2.5vw]">
 
-      <!-- Email — desktop only -->
-      <a
-        href="mailto:kennyraymond20@gmail.com"
-        class="hidden md:flex items-center text-lg text-white/80"
-      >
-        kennyraymond20@gmail.com
-      </a>
+      <!-- Location — desktop only -->
+      <p class="hero-location hidden md:flex items-center justify-end text-[clamp(1rem,2.5vw,3rem)] text-white/80">
+        Based in Los Angeles
+      </p>
 
-      <!-- Portrait -->
-      <div class="w-36 h-36 md:w-40 md:h-40 rounded-full overflow-hidden flex-shrink-0">
+      <!-- Portrait — always column 2 (center) -->
+      <div class="hero-portrait col-start-2 w-[clamp(152px,13vw,280px)] h-[clamp(152px,13vw,280px)] rounded-full overflow-hidden flex-shrink-0 my-4 md:my-0 ring-[5px] ring-white">
         <img
           src="/b&w ken sm.png"
           alt="Kenny Raymond portrait"
@@ -33,17 +32,17 @@ import WorkCards from '../components/WorkCards.astro';
       </div>
 
       <!-- Social icons — desktop only -->
-      <div class="hidden md:flex items-center gap-5">
+      <div class="hero-social hidden md:flex items-center gap-[1.5vw]">
         <a
           href="https://www.linkedin.com/in/kennyraymond/"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="LinkedIn"
         >
-          <img src="/LinkedIn Logo Icon (1).png" alt="LinkedIn" class="w-10 h-10" />
+          <img src="/LinkedIn Logo Icon (1).png" alt="LinkedIn" class="w-[clamp(2rem,3.5vw,5rem)] h-[clamp(2rem,3.5vw,5rem)] transition-transform duration-200 hover:scale-110" />
         </a>
         <a href="mailto:kennyraymond20@gmail.com" aria-label="Email">
-          <img src="/Email Logo Icon (1).png" alt="Email" class="w-10 h-10" />
+          <img src="/Email Logo Icon (1).png" alt="Email" class="w-[clamp(2.5rem,4.5vw,6rem)] h-[clamp(2.5rem,4.5vw,6rem)] transition-transform duration-200 hover:scale-110" />
         </a>
         <a
           href="https://soundcloud.com/dj-m3lodic"
@@ -51,34 +50,32 @@ import WorkCards from '../components/WorkCards.astro';
           rel="noopener noreferrer"
           aria-label="SoundCloud"
         >
-          <img src="/SoundCloud Logo Icon (1).png" alt="SoundCloud" class="w-10 h-10" />
+          <img src="/SoundCloud Logo Icon (1).png" alt="SoundCloud" class="w-[clamp(2.5rem,4.5vw,6rem)] h-[clamp(2.5rem,4.5vw,6rem)] transition-transform duration-200 hover:scale-110" />
         </a>
       </div>
 
     </div>
 
-    <!-- Title -->
-    <h2 class="text-[clamp(2.5rem,7.5vw,8rem)] font-semibold uppercase tracking-tight leading-none mt-6 md:mt-8">
-      Product Designer
-    </h2>
-
-    <!-- Location -->
-    <p class="text-base text-white/60 text-right mt-3">
-      Based in Los Angeles
-    </p>
+    <!-- Title + location — right aligned -->
+    <div class="hero-3 flex flex-col items-center md:items-end gap-2 mb-8 md:mb-0">
+      <h2 class="text-[clamp(2.8rem,8.5vw,14rem)] font-medium uppercase tracking-tight leading-none text-center md:text-right">
+        Design Leader
+      </h2>
+      <p class="flex md:hidden text-lg font-medium text-white/80 mt-1">Based in Los Angeles</p>
+    </div>
 
     <!-- Social icons — mobile only -->
-    <div class="flex md:hidden items-center justify-center gap-6 mt-6">
+    <div class="hero-4 flex md:hidden items-center justify-center gap-6">
       <a
         href="https://www.linkedin.com/in/kennyraymond/"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="LinkedIn"
       >
-        <img src="/LinkedIn Logo Icon (1).png" alt="LinkedIn" class="w-8 h-8" />
+        <img src="/LinkedIn Logo Icon (1).png" alt="LinkedIn" class="w-8 h-8 transition-transform duration-200 hover:scale-110" />
       </a>
       <a href="mailto:kennyraymond20@gmail.com" aria-label="Email">
-        <img src="/Email Logo Icon (1).png" alt="Email" class="w-8 h-8" />
+        <img src="/Email Logo Icon (1).png" alt="Email" class="w-10 h-10 transition-transform duration-200 hover:scale-110" />
       </a>
       <a
         href="https://soundcloud.com/dj-m3lodic"
@@ -86,34 +83,154 @@ import WorkCards from '../components/WorkCards.astro';
         rel="noopener noreferrer"
         aria-label="SoundCloud"
       >
-        <img src="/SoundCloud Logo Icon (1).png" alt="SoundCloud" class="w-8 h-8" />
+        <img src="/SoundCloud Logo Icon (1).png" alt="SoundCloud" class="w-10 h-10 transition-transform duration-200 hover:scale-110" />
       </a>
     </div>
 
   </section>
+  </div><!-- /hero wrapper -->
 
-  <!-- About Section -->
-  <section class="py-20 md:py-28 px-10 md:px-20">
-    <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-8 md:gap-16">
+  <!-- About Section — pulled up so heading meets photo bottom on sticky release -->
+  <section class="relative z-10 bg-black -mt-[42vh] md:-mt-[35vh] pt-[2vh] md:pt-[6vh] pb-8 md:pb-[28rem] px-[8vw]">
+    <h2 class="text-[22vw] md:text-7xl font-semibold uppercase tracking-tight text-center">
+      About
+    </h2>
 
-      <h2 class="text-5xl md:text-7xl font-semibold uppercase tracking-tight">
-        About
-      </h2>
-
-      <p class="text-base md:text-lg leading-relaxed text-white/90 md:max-w-xs md:text-right">
-        With 10+ years of experience, I shape product experiences through compelling storytelling and a bias toward building.
-      </p>
-
-    </div>
+    <p class="text-[7.5vw] md:text-[4.55vw] lg:text-[2.72vw] leading-snug text-white/90 mt-2 md:mt-6 text-center mx-auto md:max-w-[50vw]">
+      With 10+ years of experience, I shape product experiences through compelling storytelling and a bias toward building.
+    </p>
   </section>
 
   <!-- Work Section -->
-  <section class="py-20 md:py-28 px-10 md:px-20">
-    <h2 class="text-[20vw] font-semibold uppercase tracking-tighter leading-none">
-      Work
-    </h2>
+  <section id="work-section" data-no-reveal class="relative pt-48 md:pt-0 pb-32 md:pb-28 px-[8vw]">
 
-    <WorkCards />
+    <!-- Sticky full-bleed WORK heading — tiles scroll on top of it -->
+    <div class="-mx-[8vw] md:sticky md:top-0 z-0">
+      <h2 class="text-[22vw] md:text-[20vw] font-semibold uppercase tracking-tighter leading-none text-center">
+        Work
+      </h2>
+    </div>
+
+    <!-- Cards — higher z-index so they layer over the heading -->
+    <div class="relative z-10 mt-8 md:mt-[28rem]">
+      <WorkCards />
+    </div>
+
   </section>
 
 </Layout>
+
+<style>
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(24px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  .hero-1 { animation: fadeUp 0.7s ease-out both; animation-delay: 0.05s; }
+  .hero-2 { animation: fadeUp 0.7s ease-out both; animation-delay: 0.2s; }
+  .hero-3 { animation: fadeUp 0.7s ease-out both; animation-delay: 0.35s; }
+  .hero-4 { animation: fadeUp 0.7s ease-out both; animation-delay: 0.5s; }
+</style>
+
+<script>
+  // Clear fadeUp animation fill once entrance finishes, so scroll-driven
+  // transforms can override (CSS animation fill beats inline styles in cascade).
+  document.querySelectorAll('.hero-1, .hero-2, .hero-3, .hero-4').forEach((el) => {
+    el.addEventListener('animationend', () => {
+      (el as HTMLElement).style.animation = 'none';
+    }, { once: true });
+  });
+
+  // Scroll-driven hero exit animations
+  // Progress = scrollY / scrollRange. scrollRange = wrapper height − hero height.
+  // Reaches 1 exactly when the sticky section releases.
+  const heroWrapper   = document.querySelector('.hero-wrapper')   as HTMLElement | null;
+  const heroSection   = document.querySelector('.hero-section')   as HTMLElement | null;
+  const h1El          = document.querySelector('.hero-1')         as HTMLElement | null;
+  const locationEl    = document.querySelector('.hero-location')  as HTMLElement | null;
+  const productDesEl  = document.querySelector('.hero-3')         as HTMLElement | null;
+  const socialDesktop = document.querySelector('.hero-social')    as HTMLElement | null;
+  const socialMobile  = document.querySelector('.hero-4')         as HTMLElement | null;
+  const portraitEl    = document.querySelector('.hero-portrait')  as HTMLElement | null;
+
+  function onHeroScroll() {
+    const wrapperH   = heroWrapper?.offsetHeight ?? window.innerHeight * 1.5;
+    const heroH      = heroSection?.offsetHeight ?? window.innerHeight;
+    const scrollRange = Math.max(1, wrapperH - heroH);
+    const progress   = Math.min(1, Math.max(0, window.scrollY / scrollRange));
+    const opacity    = Math.max(0, 1 - progress * 1.2);
+
+    if (h1El) {
+      h1El.style.transform = `translateX(${-progress * 120}vw)`;
+      h1El.style.opacity   = String(opacity);
+    }
+    if (locationEl) {
+      locationEl.style.transform = `translateX(${-progress * 120}vw)`;
+      locationEl.style.opacity   = String(opacity);
+    }
+    if (productDesEl) {
+      productDesEl.style.transform = `translateX(${progress * 120}vw)`;
+      productDesEl.style.opacity   = String(opacity);
+    }
+    if (socialDesktop) {
+      socialDesktop.style.transform = `translateX(${progress * 120}vw)`;
+      socialDesktop.style.opacity   = String(opacity);
+    }
+    if (socialMobile) {
+      socialMobile.style.transform = `translateX(${progress * 120}vw)`;
+      socialMobile.style.opacity   = String(opacity);
+    }
+    if (portraitEl) {
+      if (window.innerWidth >= 768) {
+        portraitEl.style.transform = `scale(${0.9 + progress * 0.35})`;
+      } else {
+        portraitEl.style.transform = 'scale(1)';
+      }
+    }
+  }
+
+  window.addEventListener('scroll', onHeroScroll, { passive: true });
+  onHeroScroll(); // set initial state (photo at 90% scale)
+</script>
+
+<script>
+  const cardColors: Record<string, string> = {
+    'linkedin-video-card': '#7b61ff',
+    'reactions-card':      '#f5bb5c',
+    'nbf-card':            '#568ddb',
+  };
+
+  document.body.style.transition = 'background-color 0.6s ease';
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          document.body.style.backgroundColor = cardColors[(entry.target as HTMLElement).id];
+        } else {
+          // Only reset to black if no other card is currently visible
+          const anyVisible = Object.keys(cardColors).some((id) => {
+            const el = document.getElementById(id);
+            if (!el || el === entry.target) return false;
+            const rect = el.getBoundingClientRect();
+            return rect.top < window.innerHeight && rect.bottom > 0;
+          });
+          if (!anyVisible) {
+            document.body.style.backgroundColor = '#000000';
+          }
+        }
+      });
+    },
+    { threshold: 0.45 }
+  );
+
+  Object.keys(cardColors).forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+</script>

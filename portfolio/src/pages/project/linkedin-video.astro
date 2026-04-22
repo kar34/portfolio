@@ -1,31 +1,24 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import ProjectLayout from '../../layouts/ProjectLayout.astro';
 ---
-<Layout title="LinkedIn Video - Kenny Raymond">
-
-  <!-- Title -->
-  <section class="px-6 md:px-16 lg:px-24 pt-20 md:pt-24 pb-6 md:pb-10">
-    <h1 class="text-4xl md:text-6xl lg:text-7xl font-semibold text-white leading-tight">
-      LinkedIn Video
-    </h1>
-  </section>
+<ProjectLayout title="LinkedIn Video">
 
   <!-- Hero image -->
-  <section class="px-6 md:px-16 lg:px-24">
+  <section data-no-reveal class="project-hero-section px-3 md:px-36 lg:px-64">
     <img
       src="/Videohero.png"
       alt="LinkedIn Video hero"
-      class="w-full h-auto rounded-2xl"
+      class="w-full h-auto rounded-[48px]"
     />
   </section>
 
   <!-- Overview -->
-  <section class="px-6 md:px-16 lg:px-24 py-14 md:py-20">
-    <h2 class="text-3xl md:text-4xl font-semibold text-white mb-6">Overview</h2>
-    <p class="text-white text-base md:text-lg leading-relaxed mb-6 max-w-3xl">
+  <section class="px-3 md:px-36 lg:px-64 py-14 md:py-20">
+    <h2 class="text-[2.8rem] md:text-[3.4rem] leading-[1] md:leading-[1.1] font-semibold text-white mt-4 mb-3 max-w-3xl mx-auto">Overview</h2>
+    <p class="text-white text-2xl md:text-[1.69rem] leading-snug mx-auto mb-6 max-w-3xl">
       Video creation and consumption on LinkedIn was growing rapidly year over year, creating a major opportunity for the company. We launched a dedicated video tab that gained traction and quickly became one of LinkedIn's fastest-growing surfaces.
     </p>
-    <p class="text-white text-base md:text-lg leading-relaxed max-w-3xl">
+    <p class="text-white text-2xl md:text-[1.69rem] leading-snug mx-auto max-w-3xl">
       I led the end-to-end design, shaping the vision, defining the experience, and driving fast execution while maintaining a high quality bar.
     </p>
   </section>
@@ -40,37 +33,30 @@ import Layout from '../../layouts/Layout.astro';
   </section>
 
   <!-- Impact -->
-  <section class="px-6 md:px-16 lg:px-24 py-14 md:py-20">
-    <h2 class="text-3xl md:text-4xl font-semibold text-white mb-6">Impact</h2>
-    <p class="text-white text-base md:text-lg leading-relaxed mb-6 max-w-3xl">
+  <section class="px-3 md:px-36 lg:px-64 py-14 md:py-20">
+    <h2 class="text-[2.8rem] md:text-[3.4rem] leading-[1] md:leading-[1.1] font-semibold text-white mt-4 mb-3 max-w-3xl mx-auto">Impact</h2>
+    <p class="text-white text-2xl md:text-[1.69rem] leading-snug mx-auto mb-6 max-w-3xl">
       Since launching the new video experience, watch time has increased significantly and major creators from other platforms have started sharing video on LinkedIn.
     </p>
-    <p class="text-white text-base md:text-lg leading-relaxed max-w-3xl">
+    <p class="text-white text-2xl md:text-[1.69rem] leading-snug mx-auto max-w-3xl">
       The success of the team's work elevated the initiative into a top company priority and strategic investment for LinkedIn. The work also received external recognition, with coverage in <a href="https://techcrunch.com" target="_blank" rel="noopener" class="underline">TechCrunch</a>, <a href="https://axios.com" target="_blank" rel="noopener" class="underline">Axios</a>, and <a href="https://www.techradar.com" target="_blank" rel="noopener" class="underline">TechRadar</a>.
     </p>
   </section>
 
   <!-- Mockup images -->
-  <section class="px-6 md:px-16 lg:px-24 py-10 md:py-14">
-    <div class="bg-neutral-200 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row gap-6 md:gap-8 items-center justify-center">
+  <section class="px-3 md:px-0 py-10 md:py-14">
+    <div class="flex flex-col md:flex-row gap-6 md:gap-8 items-center justify-center">
       <img
         src="/video mock left.png"
         alt="LinkedIn Video mockup — feed view"
-        class="w-full md:w-1/2 h-auto"
+        class="w-full md:w-1/2 h-auto rounded-[40px]"
       />
       <img
         src="/video mock right.png"
         alt="LinkedIn Video mockup — profile view"
-        class="w-full md:w-1/2 h-auto"
+        class="w-full md:w-1/2 h-auto rounded-[40px]"
       />
     </div>
   </section>
 
-  <!-- Back link -->
-  <section class="flex justify-center py-16 md:py-24">
-    <a href="/work" class="text-white text-base md:text-lg font-medium">
-      ← More Projects
-    </a>
-  </section>
-
-</Layout>
+</ProjectLayout>

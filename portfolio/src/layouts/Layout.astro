@@ -1,9 +1,10 @@
 ---
 interface Props {
   title?: string;
+  hideFooter?: boolean;
 }
 
-const { title = 'Kenny Raymond - Product Designer' } = Astro.props;
+const { title = 'Kenny Raymond - Product Designer', hideFooter = false } = Astro.props;
 import '../styles/global.css';
 ---
 
@@ -12,31 +13,33 @@ import '../styles/global.css';
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <title>{title}</title>
   </head>
   <body>
 
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-5 md:px-10">
+    <nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-[8vw] py-5">
       <a href="/" aria-label="Home">
-        <img src="/white.png" alt="KR" class="h-10 w-auto" />
+        <img src="/white.png" alt="KR" class="h-11 w-auto" />
       </a>
 
-      <!-- Hamburger menu button -->
-      <button id="menu-toggle" aria-label="Toggle menu" class="relative z-50">
-        <svg width="28" height="20" viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg">
-          <line x1="0" y1="1" x2="28" y2="1" stroke="white" stroke-width="2" />
-          <line x1="0" y1="10" x2="28" y2="10" stroke="white" stroke-width="2" />
-          <line x1="0" y1="19" x2="28" y2="19" stroke="white" stroke-width="2" />
+      <!-- Hamburger menu button — white pill with two lines -->
+      <button id="menu-toggle" aria-label="Toggle menu" class="relative z-50 bg-white rounded-full px-4 py-3.5 cursor-pointer">
+        <svg width="28" height="12" viewBox="0 0 28 12" xmlns="http://www.w3.org/2000/svg">
+          <line id="line-top" x1="4.5" y1="2" x2="23.5" y2="2" stroke="black" stroke-width="2.5" stroke-linecap="round" />
+          <line id="line-bottom" x1="4.5" y1="10" x2="23.5" y2="10" stroke="black" stroke-width="2.5" stroke-linecap="round" />
         </svg>
       </button>
     </nav>
 
     <!-- Menu overlay -->
-    <div id="menu-overlay" class="fixed inset-0 bg-black z-40 flex flex-col items-center justify-center gap-8 hidden">
-      <a href="/" class="text-white text-3xl font-medium">Home</a>
-      <a href="/work" class="text-white text-3xl font-medium">Work</a>
-      <a href="/about" class="text-white text-3xl font-medium">About</a>
+    <div id="menu-overlay" class="fixed inset-0 bg-black z-40 flex flex-col items-center justify-center gap-16 md:gap-16 opacity-0 pointer-events-none transition-opacity duration-300 ease-in-out">
+      <a href="/" class="text-white text-5xl md:text-[5.625rem] font-medium opacity-0 translate-y-6 transition-all duration-300 ease-out">Home</a>
+      <a href="/work" class="text-white text-5xl md:text-[5.625rem] font-medium opacity-0 translate-y-6 transition-all duration-300 ease-out">Work</a>
+      <a href="/about" class="text-white text-5xl md:text-[5.625rem] font-medium opacity-0 translate-y-6 transition-all duration-300 ease-out">About</a>
     </div>
 
     <!-- Page content -->
@@ -45,36 +48,36 @@ import '../styles/global.css';
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-neutral-800 py-12 px-6 md:px-10">
-      <h2 class="text-2xl font-medium mb-6">Kenny Raymond</h2>
-      <div class="flex flex-col space-y-3">
+    {!hideFooter && <footer class="bg-black border-t border-neutral-800 py-12 px-6 md:px-10 flex flex-col items-center text-center">
+      <h2 class="text-2xl md:text-5xl font-medium mb-6">Kenny Raymond</h2>
+      <div class="flex flex-row gap-8">
         <a
           href="https://www.linkedin.com/in/kennyraymond/"
           target="_blank"
           rel="noopener noreferrer"
-          class="flex items-center gap-1 text-base text-white/80"
+          class="group flex items-center gap-1 text-base text-white/80 hover:text-white transition-colors duration-200"
         >
           LinkedIn
-          <img src="/Footer Social Arrow.png" alt="" class="w-3 h-3" />
+          <img src="/Footer Social Arrow.png" alt="" class="w-3 h-3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </a>
         <a
           href="mailto:kennyraymond20@gmail.com"
-          class="flex items-center gap-1 text-base text-white/80"
+          class="group flex items-center gap-1 text-base text-white/80 hover:text-white transition-colors duration-200"
         >
           Email
-          <img src="/Footer Social Arrow.png" alt="" class="w-3 h-3" />
+          <img src="/Footer Social Arrow.png" alt="" class="w-3 h-3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </a>
         <a
           href="https://soundcloud.com/dj-m3lodic"
           target="_blank"
           rel="noopener noreferrer"
-          class="flex items-center gap-1 text-base text-white/80"
+          class="group flex items-center gap-1 text-base text-white/80 hover:text-white transition-colors duration-200"
         >
           Soundcloud
-          <img src="/Footer Social Arrow.png" alt="" class="w-3 h-3" />
+          <img src="/Footer Social Arrow.png" alt="" class="w-3 h-3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </a>
       </div>
-    </footer>
+    </footer>}
 
     <!-- Lenis smooth scroll initialization (Vite bundles this ESM import) -->
     <script>
@@ -94,21 +97,65 @@ import '../styles/global.css';
       requestAnimationFrame(raf);
     </script>
 
+    <!-- Scroll reveal -->
+    <script>
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('in-view');
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.18 }
+      );
+
+      document.querySelectorAll('section:not([data-no-reveal])').forEach((el) => {
+        el.classList.add('scroll-reveal');
+        revealObserver.observe(el);
+      });
+    </script>
+
     <!-- Menu toggle script (Vite-bundled) -->
     <script>
       const toggle = document.getElementById('menu-toggle');
       const overlay = document.getElementById('menu-overlay');
 
       if (toggle && overlay) {
+        const links = Array.from(overlay.querySelectorAll('a'));
+        let isOpen = false;
+
+        function openMenu() {
+          isOpen = true;
+          toggle.classList.add('is-open');
+          overlay.classList.remove('opacity-0', 'pointer-events-none');
+          overlay.classList.add('opacity-100', 'pointer-events-auto');
+          links.forEach((link, i) => {
+            setTimeout(() => {
+              link.classList.remove('opacity-0', 'translate-y-6');
+              link.classList.add('opacity-100', 'translate-y-0');
+            }, 80 + i * 80);
+          });
+        }
+
+        function closeMenu() {
+          isOpen = false;
+          toggle.classList.remove('is-open');
+          overlay.classList.remove('opacity-100', 'pointer-events-auto');
+          overlay.classList.add('opacity-0', 'pointer-events-none');
+          links.forEach((link) => {
+            link.classList.remove('opacity-100', 'translate-y-0');
+            link.classList.add('opacity-0', 'translate-y-6');
+          });
+        }
+
         toggle.addEventListener('click', () => {
-          overlay.classList.toggle('hidden');
+          isOpen ? closeMenu() : openMenu();
         });
 
-        const links = overlay.querySelectorAll('a');
         links.forEach((link) => {
-          link.addEventListener('click', () => {
-            overlay.classList.add('hidden');
-          });
+          link.addEventListener('click', closeMenu);
         });
       }
     </script>

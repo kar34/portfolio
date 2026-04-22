@@ -3,42 +3,75 @@
 // Edit here to update both pages simultaneously.
 ---
 
-<div class="flex flex-col items-center gap-20 md:gap-28 mt-16 md:mt-24">
+<div class="flex flex-col items-center gap-[30rem] md:gap-[42rem] mt-16 md:mt-24">
 
   <!-- Card 1: LinkedIn Video -->
   <a
+    id="linkedin-video-card"
     href="/project/linkedin-video"
-    class="block w-full max-w-xs rounded-2xl overflow-hidden"
+    class="parallax-card block w-full md:max-w-[80vh] mx-auto rounded-[32px] overflow-hidden"
   >
-    <img
-      src="/LinkedInVideodesktopTile.png"
-      alt="LinkedIn Video project"
-      class="w-full h-auto"
-    />
+    <picture>
+      <source media="(max-width: 767px)" srcset="/LinkedInVideomobileTile.png" />
+      <img
+        src="/LinkedInVideodesktopTile.png"
+        alt="LinkedIn Video project"
+        class="parallax-img w-full h-auto"
+      />
+    </picture>
   </a>
 
   <!-- Card 2: LinkedIn Reactions -->
   <a
+    id="reactions-card"
     href="/project/linkedin-reactions"
-    class="block w-full max-w-xs rounded-2xl overflow-hidden"
+    class="parallax-card block w-full md:max-w-[80vh] mx-auto rounded-[32px] overflow-hidden"
   >
-    <img
-      src="/Reaction menu 9.png"
-      alt="LinkedIn Reactions project"
-      class="w-full h-auto"
-    />
+    <picture>
+      <source media="(max-width: 767px)" srcset="/ReactionmobileTile.png" />
+      <img
+        src="/Reaction menu 9.png"
+        alt="LinkedIn Reactions project"
+        class="parallax-img w-full h-auto"
+      />
+    </picture>
   </a>
 
   <!-- Card 3: Nearby Friends -->
   <a
+    id="nbf-card"
     href="/project/nearby-friends"
-    class="block w-full max-w-xs rounded-2xl overflow-hidden"
+    class="parallax-card block w-full md:max-w-[80vh] mx-auto rounded-[32px] overflow-hidden"
   >
-    <img
-      src="/NBFTile.png"
-      alt="Nearby Friends project"
-      class="w-full h-auto"
-    />
+    <picture>
+      <source media="(max-width: 767px)" srcset="/NBFmobileTile.png" />
+      <img
+        src="/NBFTile.png"
+        alt="Nearby Friends project"
+        class="parallax-img w-full h-auto"
+      />
+    </picture>
   </a>
 
 </div>
+
+<script>
+  const parallaxCards = document.querySelectorAll('.parallax-card');
+
+  function updateParallax() {
+    const vh = window.innerHeight;
+    parallaxCards.forEach((card) => {
+      const img = card.querySelector('.parallax-img') as HTMLElement | null;
+      if (!img) return;
+      const rect = card.getBoundingClientRect();
+      // Zoom from scale(1) as card enters viewport, stopping once card center hits viewport center
+      const scrolled = vh - rect.top;
+      const stopAt = vh / 2 + rect.height / 2;
+      const progress = Math.max(0, Math.min(1, scrolled / stopAt));
+      img.style.transform = `scale(${1 + progress * 0.15})`;
+    });
+    requestAnimationFrame(updateParallax);
+  }
+
+  requestAnimationFrame(updateParallax);
+</script>

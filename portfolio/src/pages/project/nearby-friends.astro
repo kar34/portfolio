@@ -1,9 +1,74 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import ProjectLayout from '../../layouts/ProjectLayout.astro';
 ---
-<Layout title="Nearby Friends - Kenny Raymond">
-  <section class="pt-28 px-10 md:px-20 py-20">
-    <p class="text-white/40 text-sm uppercase tracking-widest">Coming soon</p>
-    <h1 class="text-5xl md:text-7xl font-semibold uppercase tracking-tight mt-4">Nearby Friends</h1>
+<ProjectLayout title="Nearby Friends">
+
+  <!-- Hero image -->
+  <section data-no-reveal class="project-hero-section px-3 md:px-36 lg:px-64">
+    <img
+      src="/NBFhero.png"
+      alt="Nearby Friends hero"
+      class="w-full h-auto rounded-[48px]"
+    />
   </section>
-</Layout>
+
+  <!-- Project Overview -->
+  <section class="px-3 md:px-36 lg:px-64 py-14 md:py-20">
+    <h2 class="text-[2.8rem] md:text-[3.4rem] leading-[1] md:leading-[1.1] font-semibold text-white mt-4 mb-3 max-w-3xl mx-auto">Project Overview</h2>
+    <p class="text-white text-2xl md:text-[1.69rem] leading-snug mx-auto mb-6 max-w-3xl">
+      Nearby Friends is an opt-in feature on Facebook that lets you share your approximate location with the friends you choose. Most people use it to see who's nearby to meet up or to know when friends are visiting from out of town.
+    </p>
+    <p class="text-white text-2xl md:text-[1.69rem] leading-snug mx-auto max-w-3xl">
+      After joining the Location Products team, I became the Lead Designer for Nearby Friends and focused on improving the experience to increase adoption and user trust. Product metrics and past research pointed to a major friction point: the onboarding flow for new users.
+    </p>
+  </section>
+
+  <!-- Problems -->
+  <section class="px-3 md:px-36 lg:px-64 py-14 md:py-20">
+    <h2 class="text-[2.8rem] md:text-[3.4rem] leading-[1] md:leading-[1.1] font-semibold text-white mt-4 mb-4 max-w-3xl mx-auto">Problems</h2>
+    <p class="text-white text-2xl md:text-[1.69rem] leading-snug mx-auto mb-6 max-w-3xl">
+      <span class="font-semibold">1. Users thought their exact location would be shared to their entire friend graph,</span> which made them uncomfortable and unwilling to try the product.
+    </p>
+    <p class="text-white text-2xl md:text-[1.69rem] leading-snug mx-auto mb-6 max-w-3xl">
+      <span class="font-semibold">2. Selecting friends to share with felt unintuitive.</span> People expected a list of friends, rather than the privacy selector you get when drafting a post.
+    </p>
+    <p class="text-white text-2xl md:text-[1.69rem] leading-snug mx-auto max-w-3xl">
+      <span class="font-semibold">3. Users were confused by repeated location permission prompts</span> and didn't realize they needed to choose "Allow all the time."
+    </p>
+  </section>
+
+  <!-- Design Improvements -->
+  <section class="px-3 md:px-36 lg:px-64 py-14 md:py-20">
+    <h2 class="text-[2.8rem] md:text-[3.4rem] leading-[1] md:leading-[1.1] font-semibold text-white mt-4 mb-3 max-w-3xl mx-auto">Design Improvements</h2>
+    <p class="text-white text-2xl md:text-[1.69rem] leading-snug mx-auto max-w-3xl">
+      To address these issues, I redesigned the onboarding flow to build clarity and trust from the start. The updates clarified that only approximate location is shared, simplified how you choose friends to share with, and explained why specific location permissions are required.
+    </p>
+  </section>
+
+  <!-- Design mockups -->
+  <section class="px-3 md:px-0 py-10 md:py-14">
+    <img
+      src="/nbfmocks2.png"
+      alt="Nearby Friends redesigned onboarding screens"
+      class="w-full h-auto rounded-[40px]"
+    />
+  </section>
+
+  <!-- Project Impact -->
+  <section class="px-3 md:px-36 lg:px-64 py-14 md:py-20">
+    <h2 class="text-[2.8rem] md:text-[3.4rem] leading-[1] md:leading-[1.1] font-semibold text-white mt-4 mb-3 max-w-3xl mx-auto">Project Impact</h2>
+    <p class="text-white text-2xl md:text-[1.69rem] leading-snug mx-auto max-w-3xl">
+      By reducing the flow down from 8 to 4 screens and putting privacy controls at the forefront, the new experience led to not only significantly higher adoption, but also improved retention.
+    </p>
+  </section>
+
+  <!-- Bottom image -->
+  <section class="px-3 md:px-0 py-10 md:py-14">
+    <img
+      src="/nbfbottom.png"
+      alt="Nearby Friends"
+      class="w-full h-auto rounded-2xl"
+    />
+  </section>
+
+</ProjectLayout>

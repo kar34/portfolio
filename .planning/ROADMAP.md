@@ -79,6 +79,11 @@ Plans:
 
 **Requirements:** REQ-013, REQ-016, REQ-017
 
+**Plans:** 1 plan
+
+Plans:
+- [ ] 05-01-PLAN.md — Full LinkedIn Video case study page (title, hero, overview, GIF, impact, mockups, back-link) + visual verification checkpoint
+
 **Deliverables:**
 - `src/pages/project/linkedin-video.astro` complete
 - Title, hero image (Videohero.png), Overview section, tabcompressed.gif, Impact section, two mockup images (video mock left.png, video mock right.png), "← More Projects" link
