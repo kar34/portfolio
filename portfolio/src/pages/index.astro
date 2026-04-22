@@ -4,10 +4,12 @@ import WorkCards from '../components/WorkCards.astro';
 ---
 
 <Layout>
-  <!-- Hero wrapper — 150vh gives the sticky section 50vh of scroll to complete all exits -->
-  <div class="hero-wrapper min-h-[150vh]">
+  <!-- Hero wrapper — 150svh gives the sticky section 50svh of scroll to complete all exits.
+       svh (small viewport height) locks the hero dimensions to the smallest viewport state
+       so the mobile URL bar retracting/expanding doesn't cause content to jitter mid-scroll. -->
+  <div class="hero-wrapper min-h-[150svh]">
   <!-- Hero Section — sticky, clips exiting elements via overflow-hidden -->
-  <section data-no-reveal class="hero-section sticky top-0 h-screen flex flex-col items-stretch justify-center gap-[2vw] px-[8vw] overflow-hidden">
+  <section data-no-reveal class="hero-section sticky top-0 h-[100svh] flex flex-col items-stretch justify-center gap-[2vw] px-[8vw] overflow-hidden">
 
     <!-- Name — left aligned -->
     <h1 class="hero-1 text-[clamp(2.8rem,8.5vw,14rem)] font-medium uppercase tracking-tight leading-none text-center md:text-left">
@@ -91,7 +93,7 @@ import WorkCards from '../components/WorkCards.astro';
   </div><!-- /hero wrapper -->
 
   <!-- About Section — pulled up so heading meets photo bottom on sticky release -->
-  <section class="relative z-10 bg-black -mt-[42vh] md:-mt-[35vh] pt-[2vh] md:pt-[6vh] pb-8 md:pb-[28rem] px-[8vw]">
+  <section class="relative z-10 bg-black -mt-[42svh] md:-mt-[35svh] pt-[2svh] md:pt-[6svh] pb-8 md:pb-[28rem] px-[8vw]">
     <h2 class="text-[22vw] md:text-7xl font-semibold uppercase tracking-tight text-center">
       About
     </h2>
