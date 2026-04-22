@@ -25,37 +25,80 @@ import WorkCards from '../components/WorkCards.astro';
 </Layout>
 
 <script>
-  const cardColors: Record<string, string> = {
-    'linkedin-video-card': '#7b61ff',
-    'reactions-card':      '#f5bb5c',
-    'nbf-card':            '#568ddb',
-  };
+  function initWorkCardColors() {
+    const cardColors: Record<string, string> = {
+      'linkedin-video-card': '#7b61ff',
+      'reactions-card':      '#f5bb5c',
+      'nbf-card':            '#568ddb',
+    };
+    const cardIds = Object.keys(cardColors);
 
-  document.body.style.transition = 'background-color 0.6s ease';
+    // Only runs on the /work page. Home (/) has #work-heading and runs its
+    // own gated logic; we detect that and bail so we don't double-handle.
+    if (document.getElementById('work-heading')) return;
+    if (!document.getElementById(cardIds[0])) return;
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          document.body.style.backgroundColor = cardColors[(entry.target as HTMLElement).id];
-        } else {
-          const anyVisible = Object.keys(cardColors).some((id) => {
-            const el = document.getElementById(id);
-            if (!el || el === entry.target) return false;
-            const rect = el.getBoundingClientRect();
-            return rect.top < window.innerHeight && rect.bottom > 0;
-          });
-          if (!anyVisible) {
-            document.body.style.backgroundColor = '#000000';
-          }
+    document.body.style.transition = 'background-color 0.6s ease';
+
+    const controller = new AbortController();
+    document.addEventListener('astro:before-swap', () => controller.abort(), { once: true });
+
+    // Activation window: from when the first card first enters the viewport
+    // until the last card has fully left the top. Inside the window, the
+    // nearest-card-by-distance wins so colors hand off directly without a
+    // black flash between cards.
+    function updateBg() {
+      const vh = window.innerHeight;
+      const viewportCenter = vh / 2;
+
+      const firstEl = document.getElementById(cardIds[0]);
+      const lastEl  = document.getElementById(cardIds[cardIds.length - 1]);
+      if (!firstEl || !lastEl) {
+        document.body.style.backgroundColor = '#000000';
+        return;
+      }
+
+      const firstRect = firstEl.getBoundingClientRect();
+      const lastRect  = lastEl.getBoundingClientRect();
+      const active = firstRect.top <= vh && lastRect.bottom >= 0;
+
+      if (!active) {
+        document.body.style.backgroundColor = '#000000';
+        return;
+      }
+
+      let bestId: string | null = null;
+      let bestDist = Infinity;
+
+      cardIds.forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const cardCenter = rect.top + rect.height / 2;
+        const dist = Math.abs(cardCenter - viewportCenter);
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestId = id;
         }
       });
-    },
-    { threshold: 0.15 }
-  );
 
-  Object.keys(cardColors).forEach((id) => {
-    const el = document.getElementById(id);
-    if (el) observer.observe(el);
-  });
+      document.body.style.backgroundColor = bestId ? cardColors[bestId] : '#000000';
+    }
+
+    let rafPending = false;
+    function onScroll() {
+      if (rafPending) return;
+      rafPending = true;
+      requestAnimationFrame(() => {
+        rafPending = false;
+        updateBg();
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true, signal: controller.signal });
+    window.addEventListener('resize', onScroll, { passive: true, signal: controller.signal });
+    updateBg(); // set initial state
+  }
+
+  document.addEventListener('astro:page-load', initWorkCardColors);
 </script>

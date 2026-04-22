@@ -255,7 +255,10 @@ import WorkCards from '../components/WorkCards.astro';
     };
     const cardIds = Object.keys(cardColors);
 
-    // Only runs if the card elements exist on this page
+    // Only runs on the home page — gated on the presence of #work-heading
+    // (the sticky WORK heading id). On /work, a separate script handles
+    // card colors with slightly different activation logic.
+    if (!document.getElementById('work-heading')) return;
     if (!document.getElementById(cardIds[0])) return;
 
     document.body.style.transition = 'background-color 0.6s ease';
@@ -276,10 +279,7 @@ import WorkCards from '../components/WorkCards.astro';
 
       const workHeading = document.getElementById('work-heading');
       const lastEl      = document.getElementById(cardIds[cardIds.length - 1]);
-      if (!workHeading || !lastEl) {
-        document.body.style.backgroundColor = '#000000';
-        return;
-      }
+      if (!workHeading || !lastEl) return;
 
       const headingLocked = workHeading.getBoundingClientRect().top <= 0;
       const lastCardStillInView = lastEl.getBoundingClientRect().bottom >= 0;
