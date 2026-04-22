@@ -19,18 +19,26 @@
   color: inherit;
 }
 
-/* ── Reveal page transition panel ──
-   A full-viewport overlay that slides up to cover the page during navigation,
-   then continues out the top to reveal the new page. Semplice "Reveal"-style. */
-#reveal-panel {
+/* ── Reveal page transition panels ──
+   Staggered full-viewport color layers that cascade up to cover the page,
+   then cascade out to reveal the new page. Uses the three project-card
+   accent colors, topped by a white closing layer. Semplice "Reveal"-style. */
+#reveal-panels {
   position: fixed;
   inset: 0;
-  background-color: #000000;
   z-index: 9000;
-  transform: translateY(101%);
   pointer-events: none;
+}
+.reveal-layer {
+  position: absolute;
+  inset: 0;
+  transform: translateY(101%);
   will-change: transform;
 }
+.reveal-layer[data-color="purple"] { background-color: #7b61ff; z-index: 1; }
+.reveal-layer[data-color="yellow"] { background-color: #f5bb5c; z-index: 2; }
+.reveal-layer[data-color="blue"]   { background-color: #568ddb; z-index: 3; }
+.reveal-layer[data-color="black"]  { background-color: #000000; z-index: 4; }
 /* Project page hero image — page-load animation */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(24px) scale(0.99); }

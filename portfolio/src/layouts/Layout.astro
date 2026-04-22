@@ -22,8 +22,13 @@ import { ClientRouter } from 'astro:transitions';
   </head>
   <body>
 
-    <!-- Reveal transition panel — slides up to cover viewport during page swap -->
-    <div id="reveal-panel" transition:persist aria-hidden="true"></div>
+    <!-- Reveal transition panels — layered color cascade during page swap -->
+    <div id="reveal-panels" transition:persist aria-hidden="true">
+      <div class="reveal-layer" data-color="purple"></div>
+      <div class="reveal-layer" data-color="yellow"></div>
+      <div class="reveal-layer" data-color="blue"></div>
+      <div class="reveal-layer" data-color="black"></div>
+    </div>
 
     <!-- Custom cursor (desktop only) -->
     <div id="cursor" transition:persist aria-hidden="true"></div>
@@ -121,53 +126,78 @@ import { ClientRouter } from 'astro:transitions';
       if (!window.__revealInit) {
         window.__revealInit = true;
 
-        const COVER_MS = 500;
-        const UNCOVER_MS = 550;
+        const COVER_MS = 550;
+        const UNCOVER_MS = 800;
+        const STAGGER_MS = 70;
+        const HOLD_MS = 300;
         const EASE = 'cubic-bezier(0.65, 0, 0.35, 1)';
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        function getPanel() {
-          return document.getElementById('reveal-panel') as HTMLElement | null;
+        function getLayers() {
+          // Returned in DOM order: purple, yellow, blue, white
+          return Array.from(document.querySelectorAll<HTMLElement>('.reveal-layer'));
         }
 
         function wait(ms: number) {
           return new Promise((r) => window.setTimeout(r, ms));
         }
 
-        // Cover in: panel slides up from below into full-viewport position
+        // Cover in: layers cascade up with staggered delays. Purple leads,
+        // white closes the seal last.
         function coverIn() {
-          const p = getPanel();
-          if (!p) return Promise.resolve();
+          const layers = getLayers();
+          if (layers.length === 0) return Promise.resolve();
           if (prefersReducedMotion) {
-            p.style.transition = 'opacity 160ms ease';
-            p.style.transform = 'translateY(0%)';
-            p.style.opacity = '1';
-            return wait(160);
-          }
-          p.style.transition = `transform ${COVER_MS}ms ${EASE}`;
-          p.style.transform = 'translateY(0%)';
-          return wait(COVER_MS);
-        }
-
-        // Uncover: panel continues upward past viewport top, revealing new page
-        function uncover() {
-          const p = getPanel();
-          if (!p) return Promise.resolve();
-          if (prefersReducedMotion) {
-            p.style.transition = 'opacity 160ms ease';
-            p.style.opacity = '0';
-            return wait(160).then(() => {
-              p.style.transition = 'none';
-              p.style.transform = 'translateY(101%)';
+            layers.forEach((p) => {
+              p.style.transition = 'opacity 160ms ease';
+              p.style.transform = 'translateY(0%)';
               p.style.opacity = '1';
             });
+            return wait(160);
           }
-          p.style.transition = `transform ${UNCOVER_MS}ms ${EASE}`;
-          p.style.transform = 'translateY(-101%)';
-          return wait(UNCOVER_MS + 20).then(() => {
-            // Reset panel below viewport for next transition (no transition so it snaps)
+          layers.forEach((p, i) => {
+            p.style.transition = `transform ${COVER_MS}ms ${EASE} ${i * STAGGER_MS}ms`;
+            p.style.transform = 'translateY(0%)';
+          });
+          return wait(COVER_MS + (layers.length - 1) * STAGGER_MS);
+        }
+
+        // Uncover: subtler than cover. Only the top charcoal layer slides up
+        // and out — the colored layers beneath snap out of view invisibly
+        // (they're fully covered by charcoal, so the reset isn't seen).
+        function uncover() {
+          const layers = getLayers();
+          if (layers.length === 0) return Promise.resolve();
+          const top = layers[layers.length - 1]; // charcoal
+          const others = layers.slice(0, -1);    // purple, yellow, blue
+
+          if (prefersReducedMotion) {
+            top.style.transition = 'opacity 180ms ease';
+            top.style.opacity = '0';
+            others.forEach((p) => {
+              p.style.transition = 'none';
+              p.style.transform = 'translateY(101%)';
+            });
+            return wait(180).then(() => {
+              top.style.transition = 'none';
+              top.style.transform = 'translateY(101%)';
+              top.style.opacity = '1';
+            });
+          }
+
+          // Reset the colored layers instantly while charcoal still covers them
+          others.forEach((p) => {
             p.style.transition = 'none';
             p.style.transform = 'translateY(101%)';
+          });
+
+          // Slide the charcoal layer up and out
+          top.style.transition = `transform ${UNCOVER_MS}ms ${EASE}`;
+          top.style.transform = 'translateY(-101%)';
+
+          return wait(UNCOVER_MS + 20).then(() => {
+            top.style.transition = 'none';
+            top.style.transform = 'translateY(101%)';
           });
         }
 
@@ -181,12 +211,12 @@ import { ClientRouter } from 'astro:transitions';
         });
 
         // After DOM swap: reset scroll, reset body bg color (home page cards mutate it),
-        // then uncover the new page on the next frame.
+        // then hold the panel at full cover for a beat before uncovering.
         document.addEventListener('astro:after-swap', () => {
           window.scrollTo(0, 0);
           window.__lenis?.scrollTo(0, { immediate: true });
           document.body.style.backgroundColor = '';
-          requestAnimationFrame(() => uncover());
+          window.setTimeout(() => uncover(), HOLD_MS);
         });
       }
     </script>
@@ -321,9 +351,9 @@ import { ClientRouter } from 'astro:transitions';
             isOpen ? closeMenu() : openMenu();
           });
 
-          links.forEach((link) => {
-            link.addEventListener('click', closeMenu);
-          });
+          // Menu links don't close the menu on click — it stays open as the
+          // backdrop while the reveal panel plays. The new page loads with a
+          // fresh (closed) menu instance via ClientRouter swap.
         }
       }
 
