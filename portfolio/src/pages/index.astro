@@ -157,6 +157,28 @@ import WorkCards from '../components/WorkCards.astro';
     const controller = new AbortController();
     document.addEventListener('astro:before-swap', () => controller.abort(), { once: true });
 
+    // Lock hero dimensions in pixels on mobile so the browser's URL bar
+    // retract/expand animation can't resize the hero mid-scroll (which is
+    // what causes the "content shifts down" feel on iOS/Android).
+    // Using innerHeight captured at load time; re-measured only on orientation change.
+    function lockMobileHeroHeight() {
+      if (window.innerWidth >= 768) {
+        heroWrapper!.style.minHeight = '';
+        if (heroSection) heroSection.style.height = '';
+        return;
+      }
+      const h = window.innerHeight;
+      heroWrapper!.style.minHeight = `${h * 1.5}px`;
+      if (heroSection) heroSection.style.height = `${h}px`;
+    }
+    lockMobileHeroHeight();
+    window.addEventListener('orientationchange', lockMobileHeroHeight, { signal: controller.signal });
+    window.addEventListener('resize', () => {
+      // Only relock if the resize is due to a layout change (e.g. rotation),
+      // not a URL bar retraction — use matchMedia to detect the breakpoint flip.
+      if (window.innerWidth >= 768) lockMobileHeroHeight();
+    }, { signal: controller.signal });
+
     // Clear fadeUp animation fill once entrance finishes, so scroll-driven
     // transforms can override (CSS animation fill beats inline styles in cascade).
     document.querySelectorAll('.hero-1, .hero-2, .hero-3, .hero-4').forEach((el) => {

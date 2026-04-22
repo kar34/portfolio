@@ -211,6 +211,15 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  /* Mobile-only: prevent elastic overscroll bounce that compounds with the
+     URL bar retraction animation to exaggerate layout jitter. */
+  @media (max-width: 767px) {
+    html,
+    body {
+      overscroll-behavior: none;
+    }
+  }
+
   a {
     color: inherit;
     text-decoration: none;
