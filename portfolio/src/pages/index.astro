@@ -9,7 +9,7 @@ import WorkCards from '../components/WorkCards.astro';
        so the mobile URL bar retracting/expanding doesn't cause content to jitter mid-scroll. -->
   <div class="hero-wrapper min-h-[150svh]">
   <!-- Hero Section — sticky, clips exiting elements via overflow-hidden -->
-  <section data-no-reveal class="hero-section sticky top-0 h-[100svh] flex flex-col items-stretch justify-center gap-[2vw] px-[8vw] overflow-hidden">
+  <section data-no-reveal class="hero-section sticky top-0 h-[100svh] flex flex-col items-stretch justify-center gap-[2vw] px-[6vw] md:px-[8vw] overflow-hidden">
 
     <!-- Name — left aligned -->
     <h1 class="hero-1 text-[clamp(2.8rem,8.5vw,14rem)] font-medium uppercase tracking-tight leading-none text-center md:text-left">
@@ -95,21 +95,21 @@ import WorkCards from '../components/WorkCards.astro';
   <!-- About Section — pulled up so heading meets photo bottom on sticky release.
        Mobile: -mt stays conservative enough to clear the portrait bottom (no crop);
        pt is small so the heading sits close to the section's top edge. -->
-  <section class="relative z-10 bg-black -mt-[36svh] md:-mt-[35svh] pt-[1svh] md:pt-[6svh] pb-8 md:pb-[28rem] px-[8vw]">
+  <section class="relative z-10 bg-black -mt-[36svh] md:-mt-[35svh] pt-[1svh] md:pt-[6svh] pb-8 md:pb-[28rem] px-[6vw] md:px-[8vw]">
     <h2 class="text-[22vw] md:text-7xl font-semibold uppercase tracking-tight text-center">
       About
     </h2>
 
-    <p class="text-[7.5vw] md:text-[4.55vw] lg:text-[2.72vw] leading-snug text-white/90 mt-2 md:mt-6 text-center mx-auto md:max-w-[50vw]">
+    <p class="text-[6.5vw] md:text-[4.55vw] lg:text-[2.72vw] leading-snug text-white/90 mt-2 md:mt-6 text-center mx-auto md:max-w-[50vw]">
       With 10+ years of experience, I help teams define direction in ambiguous 0→1 spaces, align on the right problems, and turn early ideas into shipped products.
     </p>
   </section>
 
   <!-- Work Section -->
-  <section id="work-section" data-no-reveal class="relative pt-48 md:pt-0 pb-32 md:pb-28 px-[8vw]">
+  <section id="work-section" data-no-reveal class="relative pt-48 md:pt-0 pb-32 md:pb-28 px-[6vw] md:px-[8vw]">
 
     <!-- Sticky full-bleed WORK heading — tiles scroll on top of it -->
-    <div id="work-heading" class="-mx-[8vw] md:sticky md:top-0 z-0">
+    <div id="work-heading" class="-mx-[6vw] md:-mx-[8vw] md:sticky md:top-0 z-0">
       <h2 class="text-[22vw] md:text-[20vw] font-semibold uppercase tracking-tighter leading-none text-center">
         Work
       </h2>
