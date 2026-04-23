@@ -32,10 +32,12 @@ const { title, subtitle, pageTitle } = Astro.props;
     </a>
   </section>
 
-  <!-- Mobile image lightbox -->
-  <div id="lightbox" class="fixed inset-0 bg-black z-[100] hidden items-center justify-center">
+  <!-- Mobile image lightbox — stays mounted; opacity + scale drive the transition -->
+  <div id="lightbox" class="fixed inset-0 bg-black z-[100] opacity-0 pointer-events-none">
     <button id="lightbox-close" aria-label="Close lightbox" class="absolute top-4 right-4 w-12 h-12 flex items-center justify-center text-white text-3xl bg-white/15 rounded-full z-10 leading-none">×</button>
-    <img id="lightbox-img" alt="" class="max-w-full max-h-full object-contain origin-center" style="touch-action: none;" />
+    <div id="lightbox-stage" class="absolute inset-0 flex items-center justify-center p-6 md:p-12">
+      <img id="lightbox-img" alt="" class="max-w-full max-h-full w-auto h-auto object-contain origin-center" style="touch-action: none;" />
+    </div>
   </div>
 
 </Layout>
@@ -66,19 +68,25 @@ const { title, subtitle, pageTitle } = Astro.props;
     function openLightbox(src: string) {
       if (!lb || !lbImg) return;
       lbImg.src = src;
-      lb.classList.remove('hidden');
-      lb.classList.add('flex');
-      document.body.style.overflow = 'hidden';
       reset();
+      document.body.style.overflow = 'hidden';
+      // Next frame so the opacity/scale transitions fire from the pre-open state
+      requestAnimationFrame(() => {
+        lb.classList.add('is-open');
+      });
     }
 
     function closeLightbox() {
       if (!lb || !lbImg) return;
-      lb.classList.add('hidden');
-      lb.classList.remove('flex');
-      lbImg.src = '';
-      reset();
+      lb.classList.remove('is-open');
       document.body.style.overflow = '';
+      // Clear src only after the fade-out completes
+      window.setTimeout(() => {
+        if (lbImg && lb && !lb.classList.contains('is-open')) {
+          lbImg.src = '';
+          reset();
+        }
+      }, 320);
     }
 
     // Attach to every <main> image
@@ -94,7 +102,7 @@ const { title, subtitle, pageTitle } = Astro.props;
       if (e.target === lb) closeLightbox();
     });
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !lb.classList.contains('hidden')) closeLightbox();
+      if (e.key === 'Escape' && lb.classList.contains('is-open')) closeLightbox();
     });
 
     // Pinch-to-zoom + pan
@@ -160,5 +168,29 @@ const { title, subtitle, pageTitle } = Astro.props;
   .project-title {
     animation: fadeUp 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
     animation-delay: 0.1s;
+  }
+
+  /* Lightbox open/close transition: backdrop fades, stage eases up from 0.94 */
+  #lightbox {
+    transition: opacity 300ms ease;
+  }
+  #lightbox.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  #lightbox-stage {
+    transform: scale(0.94);
+    transition: transform 340ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  #lightbox.is-open #lightbox-stage {
+    transform: scale(1);
+  }
+  /* Close button gets a matching fade so it doesn't pop in */
+  #lightbox-close {
+    opacity: 0;
+    transition: opacity 260ms ease 40ms;
+  }
+  #lightbox.is-open #lightbox-close {
+    opacity: 1;
   }
 </style>
