@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import WorkCards from '../components/WorkCards.astro';
+import WorkIndex from '../components/WorkIndex.astro';
 ---
 
 <Layout title="Work - Kenny Raymond">
@@ -15,8 +16,13 @@ import WorkCards from '../components/WorkCards.astro';
       </h2>
     </div>
 
+    <!-- Index — table of contents for the cards below -->
+    <div class="relative z-10 mt-12 md:mt-20">
+      <WorkIndex />
+    </div>
+
     <!-- Cards — higher z-index so they layer over the heading -->
-    <div class="relative z-10 mt-16 md:mt-24">
+    <div class="relative z-10">
       <WorkCards />
     </div>
 

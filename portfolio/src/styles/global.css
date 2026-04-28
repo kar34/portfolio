@@ -145,6 +145,27 @@
   transition: opacity 0.25s ease;
 }
 
+/* ── Work Index — typographic project list ── */
+.work-index a {
+  transition: opacity 0.25s ease;
+}
+.work-index:has(a:hover) a:not(:hover) {
+  opacity: 0.35;
+}
+.work-index .work-index-name {
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.work-index a:hover .work-index-name {
+  transform: translateX(6px);
+}
+.work-index .work-index-arrow {
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), color 0.25s ease;
+}
+.work-index a:hover .work-index-arrow {
+  transform: translate(4px, -4px);
+  color: #ffffff;
+}
+
 /* ── Custom cursor (desktop only) ── */
 @media (pointer: fine) {
   html,

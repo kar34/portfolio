@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import WorkCards from '../components/WorkCards.astro';
+import WorkIndex from '../components/WorkIndex.astro';
 ---
 
 <Layout>
@@ -115,8 +116,15 @@ import WorkCards from '../components/WorkCards.astro';
       </h2>
     </div>
 
+    <!-- Index — table of contents for the cards below.
+         Sits inside the sticky-heading zone so it reads first as you enter
+         the work section, then exits as the cinematic cards take over. -->
+    <div class="relative z-10 mt-8 md:mt-24">
+      <WorkIndex />
+    </div>
+
     <!-- Cards — higher z-index so they layer over the heading -->
-    <div class="relative z-10 mt-8 md:mt-[28rem]">
+    <div class="relative z-10 mt-24 md:mt-64">
       <WorkCards />
     </div>
 
