@@ -166,7 +166,13 @@
   color: #ffffff;
 }
 
-/* ── Custom cursor (desktop only) ── */
+/* ── Custom cursor (desktop only) ──
+   Hide on touch devices: without (pointer: fine) styles, the cursor div
+   would otherwise render its label text inline at the top of the page. */
+#cursor {
+  display: none;
+}
+
 @media (pointer: fine) {
   html,
   body {
