@@ -31,7 +31,9 @@ import { ClientRouter } from 'astro:transitions';
     </div>
 
     <!-- Custom cursor (desktop only) -->
-    <div id="cursor" transition:persist aria-hidden="true"></div>
+    <div id="cursor" transition:persist aria-hidden="true">
+      <span id="cursor-label">View Case Study</span>
+    </div>
 
     <!-- Navigation -->
     <nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-[8vw] py-5">
@@ -292,17 +294,24 @@ import { ClientRouter } from 'astro:transitions';
 
         // Grow on interactive targets via event delegation so dynamic DOM works too
         const hoverSelector = 'a, button, [role="button"], input[type="submit"], input[type="button"], label[for], .img-clickable';
+        const caseStudySelector = '.parallax-card';
 
         document.addEventListener('mouseover', (e) => {
           const target = e.target as HTMLElement;
-          if (target && target.closest && target.closest(hoverSelector)) {
+          if (!target || !target.closest) return;
+          if (target.closest(caseStudySelector)) {
+            cursor.classList.add('is-case-study');
+          } else if (target.closest(hoverSelector)) {
             cursor.classList.add('is-hover');
           }
         });
 
         document.addEventListener('mouseout', (e) => {
           const target = e.target as HTMLElement;
-          if (target && target.closest && target.closest(hoverSelector)) {
+          if (!target || !target.closest) return;
+          if (target.closest(caseStudySelector)) {
+            cursor.classList.remove('is-case-study');
+          } else if (target.closest(hoverSelector)) {
             cursor.classList.remove('is-hover');
           }
         });
@@ -310,6 +319,12 @@ import { ClientRouter } from 'astro:transitions';
         // Hide on press, restore on release — subtle, matches premium feel
         window.addEventListener('mousedown', () => cursor.classList.add('is-down'));
         window.addEventListener('mouseup', () => cursor.classList.remove('is-down'));
+
+        // Clear hover/case-study state on navigation — mouseout doesn't fire when
+        // the page swaps under the cursor, so the morph would otherwise persist.
+        document.addEventListener('astro:before-preparation', () => {
+          cursor.classList.remove('is-case-study', 'is-hover', 'is-down');
+        });
       }
     </script>
 
