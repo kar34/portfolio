@@ -28,13 +28,13 @@ const stops = [
       },
       {
         eyebrow: 'LinkedIn · 2025',
-        headline: '#1 in Bug Reporting',
-        body: 'Most bugs reported company-wide. Fixes shipped directly to the codebase.',
+        headline: '#1 Bug Reporter',
+        body: 'I reported the most bugs in the company in 2025.',
       },
       {
         eyebrow: 'Design Award · 2024',
-        headline: 'Design Excellence',
-        body: "Recipient of LinkedIn's annual Design Excellence Award — one of three awarded company-wide.",
+        headline: 'Design Org Award',
+        body: 'I was 1 of 3 designers at the company recognized for design excellence.',
       },
     ],
   },
@@ -189,7 +189,7 @@ const stops = [
               <!-- Persistent header: index left, company name right (small) -->
               <div class="stop-header flex items-baseline justify-between mb-8 md:mb-12">
                 <span class="text-2xl md:text-4xl font-semibold tabular-nums tracking-tight">{stop.index}</span>
-                <span class="text-xs md:text-sm font-medium uppercase tracking-[0.3em] text-white/70">{stop.name}</span>
+                <span class="text-sm md:text-base font-medium uppercase tracking-[0.3em] text-white/70">{stop.name}</span>
               </div>
 
               <!-- Stage stack — only one stage active at a time -->
@@ -237,11 +237,11 @@ const stops = [
                 <!-- Stages 1..N — one cinematic bullet per stage -->
                 {stop.impact.map((item, j) => (
                   <div class="stop-stage-bullet absolute inset-0 flex flex-col items-center justify-center text-center gap-5 md:gap-8 px-2" data-stage={j + 1}>
-                    <p class="bullet-eyebrow text-xs md:text-sm uppercase tracking-[0.4em] text-white/75">{item.eyebrow}</p>
+                    <p class="bullet-eyebrow text-sm md:text-base uppercase tracking-[0.4em] text-white/75">{item.eyebrow}</p>
                     <h5 class="bullet-headline text-[12vw] md:text-[8vw] leading-[0.95] font-semibold tracking-tight max-w-[18ch] md:max-w-[16ch] text-balance">
                       {item.headline}
                     </h5>
-                    <p class="bullet-body text-lg md:text-2xl max-w-2xl text-white/90 leading-snug">
+                    <p class="bullet-body mt-2 md:mt-4 text-xl md:text-3xl max-w-2xl text-white/90 leading-snug">
                       {item.body}
                     </p>
                   </div>
@@ -298,7 +298,7 @@ const stops = [
 
       <!-- Stage counter only — section title lives in the big intro above -->
       <header class="relative z-10 flex items-baseline justify-end px-[6vw] md:px-[10vw] pt-10 md:pt-16">
-        <p class="text-xs md:text-sm uppercase tracking-[0.35em] text-white/55 tabular-nums">
+        <p class="text-sm md:text-base uppercase tracking-[0.35em] text-white/55 tabular-nums">
           <span id="best-stage-num">01</span> <span class="opacity-50">/ 02</span>
         </p>
       </header>
@@ -311,7 +311,7 @@ const stops = [
             <h3 class="best-word stage-ambiguity text-[18vw] md:text-[14vw] font-semibold tracking-tighter leading-[0.85] uppercase">
               Ambiguity
             </h3>
-            <p class="text-lg md:text-2xl max-w-2xl text-white/85 leading-snug">
+            <p class="mt-4 md:mt-8 text-2xl md:text-4xl max-w-2xl text-white/85 leading-snug">
               I love using design to explore wide, debate rigorously, and narrow on a thesis.
             </p>
           </article>
@@ -320,7 +320,7 @@ const stops = [
             <h3 class="best-word stage-building text-[16vw] md:text-[12vw] font-semibold tracking-tight leading-[0.85] lowercase whitespace-nowrap">
               Building<span class="cursor-blink" aria-hidden="true"></span>
             </h3>
-            <p class="text-lg md:text-2xl max-w-2xl text-white/85 leading-snug">
+            <p class="mt-4 md:mt-8 text-2xl md:text-4xl max-w-2xl text-white/85 leading-snug">
               I believe the best experiences come from more time spent in Figma and Claude Code and less time spent in docs and reviews.
             </p>
           </article>
