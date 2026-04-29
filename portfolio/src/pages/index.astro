@@ -151,9 +151,11 @@ import WorkIndex from '../components/WorkIndex.astro';
 
 <script>
   function initHeroScroll() {
-    // Only runs on the home page — bails out if the hero DOM isn't present
+    // Only runs on the home page — bails out if the hero DOM isn't present.
+    // Also bails on /intro (which reuses the same hero) so its dedicated script wins.
     const heroWrapper   = document.querySelector('.hero-wrapper')   as HTMLElement | null;
     if (!heroWrapper) return;
+    if (document.getElementById('experience-section')) return;
 
     const heroSection   = document.querySelector('.hero-section')   as HTMLElement | null;
     const h1El          = document.querySelector('.hero-1')         as HTMLElement | null;
