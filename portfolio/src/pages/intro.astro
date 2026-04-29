@@ -312,16 +312,16 @@ const stops = [
               Ambiguity
             </h3>
             <p class="text-lg md:text-2xl max-w-2xl text-white/85 leading-snug">
-              Give me a 0→1 space and the room to explore. The blanker the canvas, the better the shot.
+              I love using design to explore wide, debate rigorously, and narrow on a thesis.
             </p>
           </article>
 
           <article class="best-stage absolute inset-0 flex flex-col items-center justify-center text-center gap-5 md:gap-8" data-stage="1">
-            <h3 class="best-word stage-building text-[16vw] md:text-[12vw] font-semibold tracking-tight leading-[0.85] uppercase whitespace-nowrap">
+            <h3 class="best-word stage-building text-[16vw] md:text-[12vw] font-semibold tracking-tight leading-[0.85] lowercase whitespace-nowrap">
               Building<span class="cursor-blink" aria-hidden="true"></span>
             </h3>
             <p class="text-lg md:text-2xl max-w-2xl text-white/85 leading-snug">
-              I love spending my time building — in Figma, in Claude Code, anywhere the loop is fast. Shipping and learning beats sitting in docs and review cycles.
+              I believe the best experiences come from more time spent in Figma and Claude Code and less time spent in docs and reviews.
             </p>
           </article>
 
@@ -501,11 +501,16 @@ const stops = [
       scale(var(--g3s, 1));
   }
 
-  /* "Building" stage — monospace lettering simulates code/editor feel,
-     pairing with the blinking cursor for a "live editor" moment. */
+  /* "Building" stage — uses the native system mono stack so the type renders
+     in the exact font Slack/VS Code/Terminal use for code blocks (Monaco/Menlo
+     on macOS, Consolas on Windows, ui-monospace as the modern default).
+     Most authentically "code editor" feel possible, no humanist curves. */
   .stage-building {
-    font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-    letter-spacing: -0.02em;
+    font-family: ui-monospace, Monaco, Menlo, Consolas, 'Courier New', monospace;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.12em;
   }
 
   /* Cursor blink — CSS-drawn block (instead of the ▍ Unicode glyph, which
@@ -518,7 +523,7 @@ const stops = [
     margin-left: 0.08em;
     vertical-align: baseline;
     transform: translateY(0.055em); /* nudge so it sits visually centered on cap-height */
-    background-color: rgba(255, 255, 255, 0.35);
+    background-color: rgba(255, 255, 255, 0.5);
     animation: cursorBlink 1.05s steps(2, jump-none) infinite;
   }
   @keyframes cursorBlink {
@@ -549,10 +554,10 @@ const stops = [
        2.0vw -1.0vh 55px rgba(86, 141, 219, 0.7);
     animation:
       ambiguityShimmer 5s ease-in-out infinite,
-      ambiguityFade 4s ease-in-out infinite,
-      ambiguityBlur 7s ease-in-out infinite;
+      ambiguityFade 3s ease-in-out infinite,
+      ambiguityBlur 4s ease-in-out infinite;
   }
-  /* Three concurrent animations on different periods (5s, 4s, 7s) that never
+  /* Three concurrent animations on different periods (5s, 3s, 4s) that never
      align — guarantees the visual is always changing while you dwell. */
   @keyframes ambiguityShimmer {
     0%, 100% {
