@@ -19,22 +19,22 @@ const stops = [
       {
         eyebrow: 'Short-Form · 0→1',
         headline: 'LinkedIn Video',
-        body: "Led end-to-end design and direction for LinkedIn's short-form video initiative — a top company priority. Drove 0→1 strategy, cross-org alignment, and progress toward product–market fit.",
+        body: "Led end-to-end design and direction for LinkedIn's short-form video initiative.",
       },
       {
-        eyebrow: 'Trust & Safety',
-        headline: 'Trust on the Feed',
-        body: 'Led design for trust & safety initiatives on the LinkedIn feed — helping members navigate quality and authenticity.',
+        eyebrow: '2021-2024',
+        headline: 'Trust & Safety',
+        body: 'Led design on trust & safety initiatives on the LinkedIn feed — thinking about how we can keep creators safe on the platform.',
       },
       {
         eyebrow: 'LinkedIn · 2025',
         headline: '#1 Bug Reporter',
-        body: 'I reported the most bugs in the company in 2025.',
+        body: 'Reported the most bugs in the company in 2025.',
       },
       {
         eyebrow: 'Design Award · 2024',
         headline: 'Design Org Award',
-        body: 'I was 1 of 3 designers at the company recognized for design excellence.',
+        body: 'Was 1 of 3 designers at the company recognized for design excellence.',
       },
     ],
   },
@@ -50,16 +50,17 @@ const stops = [
     datesShort: '2018 — 2021',
     yearsLabel: '2018 — 2021',
     summary:
-      'Led product design for location-sharing initiatives, evangelizing best practices for responsibly integrating location features across Facebook, Instagram, WhatsApp, Messenger, and AR/VR. Earlier, drove ad-creation simplification for small businesses inside the Ads org.',
+      'Led product design for location sharing across Facebook, Instagram, WhatsApp, Messenger, and AR/VR. Earlier, drove ad-creation simplification for small businesses inside the Ads org.',
     impact: [
       {
         eyebrow: 'Family of Apps',
+        logos: ['facebook', 'instagram', 'whatsapp', 'messenger', 'oculus'],
         headline: 'Location Sharing',
-        body: 'Led product design for location-sharing initiatives, evangelizing best practices for responsibly integrating location features across Facebook, Instagram, WhatsApp, Messenger, and AR/VR.',
+        body: 'Led product design for location sharing across Facebook, Instagram, WhatsApp, Messenger, and AR/VR.',
       },
       {
         eyebrow: 'Ads · Small Business',
-        headline: 'Simpler Ad Creation',
+        headline: 'Ad Creation',
         body: 'Streamlined ad creation flow and goal selection within the Ads org, improving campaign success for small businesses.',
       },
     ],
@@ -237,7 +238,19 @@ const stops = [
                 <!-- Stages 1..N — one cinematic bullet per stage -->
                 {stop.impact.map((item, j) => (
                   <div class="stop-stage-bullet absolute inset-0 flex flex-col items-center justify-center text-center gap-5 md:gap-8 px-2" data-stage={j + 1}>
-                    <p class="bullet-eyebrow text-sm md:text-base uppercase tracking-[0.4em] text-white/75">{item.eyebrow}</p>
+                    {item.logos ? (
+                      <div class="bullet-eyebrow bullet-logo-row flex items-center justify-center gap-6 md:gap-10 mb-4 md:mb-8">
+                        {item.logos.map((logo) => (
+                          <img
+                            src={`/brand/${logo}.svg`}
+                            alt={logo}
+                            class="brand-logo h-7 md:h-10 w-auto opacity-80"
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <p class="bullet-eyebrow text-sm md:text-base uppercase tracking-[0.4em] text-white/75">{item.eyebrow}</p>
+                    )}
                     <h5 class="bullet-headline text-[12vw] md:text-[8vw] leading-[0.95] font-semibold tracking-tight max-w-[18ch] md:max-w-[16ch] text-balance">
                       {item.headline}
                     </h5>
@@ -321,7 +334,7 @@ const stops = [
               Building<span class="cursor-blink" aria-hidden="true"></span>
             </h3>
             <p class="mt-4 md:mt-8 text-2xl md:text-4xl max-w-2xl text-white/85 leading-snug">
-              I believe the best experiences come from more time spent in Figma and Claude Code and less time spent in docs and reviews.
+              I like getting to tangible artifacts quickly because it helps teams align, react, and learn faster.
             </p>
           </article>
 
