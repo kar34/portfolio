@@ -1,5 +1,56 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+// Experience timeline data — same as /intro, but with `impact: []` for every
+// stop so only the intro stage renders (per the about-page brief: skip the
+// per-company sub-bullets).
+const stops = [
+  {
+    id: 'linkedin',
+    index: '01',
+    color: '#0A66C2',
+    logo: '/linkedin.png',
+    logoScale: '100%',
+    name: 'LinkedIn',
+    role: 'Staff Product Designer',
+    dates: 'Nov 2021 — Present',
+    datesShort: '2021 — NOW',
+    yearsLabel: '2021 — Now',
+    summary:
+      "Leading end-to-end product design and direction for LinkedIn's short-form video initiative — a top company priority. Stepped in as Interim Product Manager for six months. Earlier, led design for trust & safety on the feed.",
+    impact: [],
+  },
+  {
+    id: 'facebook',
+    index: '02',
+    color: '#1877F2',
+    logo: '/facebook.png',
+    logoScale: '100%',
+    name: 'Facebook',
+    role: 'Product Designer',
+    dates: 'Jan 2018 — Mar 2021',
+    datesShort: '2018 — 2021',
+    yearsLabel: '2018 — 2021',
+    summary:
+      'Led product design for location sharing initiatives across Facebook, Instagram, WhatsApp, Messenger, and AR/VR. Earlier, drove ad-creation simplification for small businesses inside the Ads org.',
+    impact: [],
+  },
+  {
+    id: 'workday',
+    index: '03',
+    color: '#F38B00',
+    logo: '/workday.png',
+    logoScale: '100%',
+    name: 'Workday',
+    role: 'Product Designer',
+    dates: 'Jul 2016 — Dec 2017',
+    datesShort: '2016 — 2017',
+    yearsLabel: '2016 — 2017',
+    summary:
+      "Designed Workday's Time Off and Scheduling product areas — bringing a mobile-first, consumer-grade experience to an enterprise HR product.",
+    impact: [],
+  },
+];
 ---
 
 <Layout title="About - Kenny Raymond">
@@ -32,4 +83,536 @@ import Layout from '../layouts/Layout.astro';
 
   </section>
 
+  <!-- Experience — Cinematic Timeline (intro stage only per company) -->
+  <section
+    id="experience-section"
+    data-no-reveal
+    class="relative z-10 pt-24 md:pt-40"
+  >
+
+    <!-- Section title -->
+    <header class="px-[6vw] md:px-[8vw] text-center mb-24 md:mb-40">
+      <h2 class="text-[14vw] md:text-[10vw] leading-[0.9] font-semibold uppercase tracking-tighter">
+        My Experience
+      </h2>
+      <p class="text-base md:text-xl uppercase tracking-[0.35em] font-medium text-white/80 mt-6 md:mt-8">A Decade In Product</p>
+    </header>
+
+    <!-- Stops -->
+    <div id="experience-stops">
+      {stops.map((stop, i) => {
+        const numStages = 1 + stop.impact.length;
+        // No bullets on /about → keep each stop a viewport tall but give a
+        // little extra so the intro stage breathes during the wash.
+        const sectionMinHeight = `${120 + stop.impact.length * 80}svh`;
+        return (
+          <article
+            class="company-stop relative"
+            data-color={stop.color}
+            data-index={i}
+            data-num-stages={numStages}
+            id={`stop-${stop.id}`}
+            style={`min-height: ${sectionMinHeight}`}
+          >
+
+            <!-- Pinned content — sticky child, viewport-fit, hosts the stage stack -->
+            <div class="stop-pin sticky top-0 h-[100svh] overflow-hidden flex flex-col px-[8vw] py-12 md:py-16">
+
+              <!-- Persistent header: index left, company name right (small) -->
+              <div class="stop-header flex items-baseline justify-between mb-8 md:mb-12">
+                <span class="text-2xl md:text-4xl font-semibold tabular-nums tracking-tight">{stop.index}</span>
+                <span class="text-sm md:text-base font-medium uppercase tracking-[0.3em] text-white/70">{stop.name}</span>
+              </div>
+
+              <!-- Stage stack — only one stage active at a time -->
+              <div class="stop-stage-stack relative flex-1">
+
+                <!-- Stage 0 — intro layout -->
+                <div class="stop-stage-intro absolute inset-0 grid md:grid-cols-12 gap-10 md:gap-16 items-center" data-stage="0">
+
+                  <!-- Left: logo + giant year range -->
+                  <div class="md:col-span-5 flex flex-col items-start gap-8 md:gap-12">
+                    <div
+                      class="stop-logo w-[22vw] h-[22vw] md:w-[11vw] md:h-[11vw] max-w-[150px] max-h-[150px] md:max-w-[200px] md:max-h-[200px] rounded-full overflow-hidden shadow-[0_18px_50px_rgba(0,0,0,0.28)] flex items-center justify-center"
+                      style={`background-color: ${stop.color}`}
+                    >
+                      <img
+                        src={stop.logo}
+                        alt={`${stop.name} logo`}
+                        class="object-contain"
+                        style={`width: ${stop.logoScale}; height: ${stop.logoScale};`}
+                      />
+                    </div>
+
+                    <h3 class="stop-years text-[18vw] md:text-[10vw] leading-[0.85] font-semibold tracking-tighter -ml-1">
+                      {stop.datesShort}
+                    </h3>
+                  </div>
+
+                  <!-- Right: name + role + summary -->
+                  <div class="md:col-span-7 flex flex-col gap-6 md:gap-8 max-w-2xl">
+                    <div>
+                      <h4 class="stop-name text-[12vw] md:text-[7vw] leading-[0.95] font-semibold tracking-tight">
+                        {stop.name}
+                      </h4>
+                      <p class="stop-role mt-3 md:mt-4 text-lg md:text-2xl font-medium text-white/90">
+                        {stop.role}
+                      </p>
+                    </div>
+
+                    <p class="stop-summary text-base md:text-xl leading-relaxed text-white/90">
+                      {stop.summary}
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </article>
+        );
+      })}
+    </div>
+
+  </section>
+
+  <!-- ── "When I'm At My Best" wrapper: intro headline + pinned stages share
+       a single ambient aurora layer that pins to the viewport across both. ── -->
+  <div id="best-wrapper" class="relative bg-black">
+
+    <!-- Aurora layer — absolute over the wrapper, with a sticky child that
+         pins to viewport-top while the wrapper is in view. -->
+    <div class="best-aurora absolute inset-0 pointer-events-none" aria-hidden="true">
+      <div class="best-aurora-inner sticky top-0 h-[100svh] w-full">
+        <div class="best-glow">
+          <div class="best-glow-third"></div>
+        </div>
+      </div>
+    </div>
+
+  <!-- Section intro: layered hierarchy — supporting line / poster line -->
+  <section class="relative z-10 pt-80 md:pt-[24rem] pb-24 md:pb-32 px-[6vw] md:px-[8vw] text-center">
+    <h2 class="best-intro-heading max-w-6xl mx-auto">
+      <span class="block text-[5.25vw] md:text-[3.15vw] uppercase font-semibold tracking-tight text-white/75 leading-none mb-3 md:mb-5">When I'm</span>
+      <span class="block text-[14vw] md:text-[10.5vw] font-semibold uppercase tracking-tighter leading-[0.85] whitespace-nowrap">At My Best</span>
+    </h2>
+  </section>
+
+  <!-- Pinned stages reveal -->
+  <section id="best-section" class="relative z-10" style="min-height: 240svh">
+    <div class="best-pin sticky top-0 h-[100svh] overflow-hidden flex flex-col">
+
+      <!-- Stage counter only — section title lives in the big intro above -->
+      <header class="relative z-10 flex items-baseline justify-end px-[6vw] md:px-[10vw] pt-10 md:pt-16">
+        <p class="text-sm md:text-base uppercase tracking-[0.35em] text-white/55 tabular-nums">
+          <span id="best-stage-num">01</span> <span class="opacity-50">/ 02</span>
+        </p>
+      </header>
+
+      <!-- Center stage stack -->
+      <div class="flex-1 relative z-10 flex items-center justify-center px-[6vw] md:px-[10vw]">
+        <div class="best-stage-stack relative w-full max-w-5xl" style="min-height: 60vh">
+
+          <article class="best-stage absolute inset-0 flex flex-col items-center justify-center text-center gap-5 md:gap-8" data-stage="0">
+            <h3 class="best-word stage-ambiguity text-[18vw] md:text-[14vw] font-semibold tracking-tighter leading-[0.85] uppercase">
+              Ambiguity
+            </h3>
+            <p class="mt-4 md:mt-8 text-2xl md:text-4xl max-w-2xl text-white/85 leading-snug">
+              I love using design to explore wide, debate rigorously, and narrow on a thesis.
+            </p>
+          </article>
+
+          <article class="best-stage absolute inset-0 flex flex-col items-center justify-center text-center gap-5 md:gap-8" data-stage="1">
+            <h3 class="best-word stage-building text-[16vw] md:text-[12vw] font-semibold tracking-tight leading-[0.85] lowercase whitespace-nowrap">
+              Building<span class="cursor-blink" aria-hidden="true"></span>
+            </h3>
+            <p class="mt-4 md:mt-8 text-2xl md:text-4xl max-w-2xl text-white/85 leading-snug">
+              I like getting to tangible artifacts quickly because it helps teams align, react, and learn faster.
+            </p>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- Bottom progress rail -->
+      <div class="relative z-10 px-[6vw] md:px-[10vw] pb-10 md:pb-16">
+        <div class="relative h-px bg-white/15 w-full">
+          <div id="best-progress" class="absolute inset-y-0 left-0 right-0 bg-white origin-left" style="transform: scaleX(0); transition: transform 0.3s ease-out;"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  </div><!-- /best-wrapper -->
+
 </Layout>
+
+<style>
+  /* Stage-stack: only one stage active at a time. Past stages slide up & out;
+     future stages wait below. Active stage holds center stage. */
+  .stop-stage-intro,
+  .stop-stage-bullet {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    pointer-events: none;
+    will-change: opacity, transform;
+  }
+  .stop-stage-intro.is-active,
+  .stop-stage-bullet.is-active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .stop-stage-intro.is-past,
+  .stop-stage-bullet.is-past {
+    opacity: 0;
+    transform: translateY(-60px);
+  }
+
+  .company-stop {
+    will-change: opacity, transform;
+  }
+
+  /* ── Section: When I'm at my best — three-act stage replace ── */
+  .best-stage {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    pointer-events: none;
+    will-change: opacity, transform;
+  }
+  .best-stage.is-active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .best-stage.is-past {
+    opacity: 0;
+    transform: translateY(-60px);
+  }
+
+  /* ── Ambient aurora for "When I'm at my best" wrapper ── */
+  .best-glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .best-glow::before,
+  .best-glow::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(150px);
+    will-change: transform;
+    transition: transform 0.18s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .best-glow::before {
+    width: 95vw;
+    height: 85vh;
+    left: -15vw;
+    top: -20vh;
+    background: radial-gradient(circle, rgba(123, 97, 255, 0.5), transparent 65%);
+    transform:
+      translate(var(--g1x, 0), var(--g1y, 0))
+      scale(var(--g1s, 1));
+  }
+  .best-glow::after {
+    width: 85vw;
+    height: 80vh;
+    right: -15vw;
+    bottom: -20vh;
+    background: radial-gradient(circle, rgba(86, 141, 219, 0.42), transparent 65%);
+    transform:
+      translate(var(--g2x, 0), var(--g2y, 0))
+      scale(var(--g2s, 1));
+  }
+  .best-glow-third {
+    position: absolute;
+    width: 70vw;
+    height: 65vh;
+    left: 18vw;
+    top: 12vh;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(245, 187, 92, 0.30), transparent 65%);
+    filter: blur(150px);
+    will-change: transform;
+    transition: transform 0.18s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transform:
+      translate(var(--g3x, 0), var(--g3y, 0))
+      scale(var(--g3s, 1));
+  }
+
+  /* "Building" stage — system mono stack for code-block feel */
+  .stage-building {
+    font-family: ui-monospace, Monaco, Menlo, Consolas, 'Courier New', monospace;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.12em;
+  }
+
+  /* Cursor blink — CSS-drawn block sized to cap-height of the surrounding text. */
+  .cursor-blink {
+    display: inline-block;
+    width: 0.1em;
+    height: 0.88em;
+    margin-left: 0.08em;
+    vertical-align: baseline;
+    transform: translateY(0.055em);
+    background-color: rgba(255, 255, 255, 0.5);
+    animation: cursorBlink 1.05s steps(2, jump-none) infinite;
+  }
+  @keyframes cursorBlink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  /* "Ambiguity" text effect — hollow stroke + chromatic ghost shadows + blur cycle */
+  .stage-ambiguity {
+    color: transparent;
+    -webkit-text-stroke: 0.18vw rgba(255, 255, 255, 0.9);
+    text-shadow:
+      -2.0vw  1.0vh 55px rgba(123, 97, 255, 0.7),
+       2.0vw -1.0vh 55px rgba(86, 141, 219, 0.7);
+    animation:
+      ambiguityShimmer 5s ease-in-out infinite,
+      ambiguityFade 3s ease-in-out infinite,
+      ambiguityBlur 4s ease-in-out infinite;
+  }
+  @keyframes ambiguityShimmer {
+    0%, 100% {
+      text-shadow:
+        -2.0vw  1.0vh 55px rgba(123, 97, 255, 0.7),
+         2.0vw -1.0vh 55px rgba(86, 141, 219, 0.7);
+    }
+    33% {
+      text-shadow:
+         2.2vw -1.2vh 65px rgba(123, 97, 255, 0.7),
+        -2.2vw  1.2vh 65px rgba(86, 141, 219, 0.7);
+    }
+    66% {
+      text-shadow:
+        -1.2vw -1.5vh 70px rgba(123, 97, 255, 0.7),
+         1.2vw  1.5vh 70px rgba(86, 141, 219, 0.7);
+    }
+  }
+  @keyframes ambiguityFade {
+    0%, 100% { -webkit-text-stroke-color: rgba(255, 255, 255, 0.9); }
+    50%      { -webkit-text-stroke-color: rgba(255, 255, 255, 0.40); }
+  }
+  @keyframes ambiguityBlur {
+    0%, 100% { filter: blur(0); }
+    50%      { filter: blur(4px); }
+  }
+</style>
+
+<!-- Cinematic timeline: bg-color wash + active-stop reveal. -->
+<script>
+  function initAboutExperienceTimeline() {
+    const section = document.getElementById('experience-section');
+    if (!section) return;
+
+    const stops = Array.from(document.querySelectorAll<HTMLElement>('.company-stop'));
+    if (stops.length === 0) return;
+
+    document.body.style.transition = 'background-color 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+
+    const controller = new AbortController();
+    document.addEventListener('astro:before-swap', () => {
+      document.body.style.backgroundColor = '';
+      document.body.style.transition = '';
+      controller.abort();
+    }, { once: true });
+
+    const stopData = stops.map((stop) => {
+      const stages = Array.from(stop.querySelectorAll<HTMLElement>(
+        '.stop-stage-intro, .stop-stage-bullet'
+      ));
+      const dots = Array.from(stop.querySelectorAll<HTMLElement>('.stop-dot'));
+      return { stop, stages, dots };
+    });
+
+    function update() {
+      const vh = window.innerHeight;
+      const center = vh / 2;
+
+      let activeStop: HTMLElement | null = null;
+
+      stopData.forEach(({ stop, stages, dots }) => {
+        const r = stop.getBoundingClientRect();
+        const containsCenter = r.top <= center && r.bottom >= center;
+
+        if (containsCenter) {
+          activeStop = stop;
+          const total = stop.offsetHeight - vh;
+          const progress = total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 0;
+          const idx = stages.length === 0
+            ? 0
+            : Math.min(stages.length - 1, Math.floor(progress * stages.length));
+
+          stages.forEach((s, i) => {
+            s.classList.toggle('is-active', i === idx);
+            s.classList.toggle('is-past',   i <  idx);
+          });
+          dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+        } else if (r.bottom < center) {
+          stages.forEach((s) => {
+            s.classList.add('is-past');
+            s.classList.remove('is-active');
+          });
+          dots.forEach((d, i) => d.classList.toggle('is-active', i === stages.length - 1));
+        } else {
+          stages.forEach((s) => s.classList.remove('is-active', 'is-past'));
+          dots.forEach((d, i) => d.classList.toggle('is-active', i === 0));
+        }
+      });
+
+      if (activeStop) {
+        const color = (activeStop as HTMLElement).dataset.color;
+        if (color) document.body.style.backgroundColor = color;
+      } else {
+        document.body.style.backgroundColor = '#000000';
+      }
+    }
+
+    let pending = false;
+    function onScroll() {
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(() => {
+        pending = false;
+        update();
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true, signal: controller.signal });
+    window.addEventListener('resize', onScroll, { passive: true, signal: controller.signal });
+    update();
+  }
+
+  document.addEventListener('astro:page-load', initAboutExperienceTimeline);
+</script>
+
+<!-- "When I'm at my best" — pinned-stage scroll progression with aurora. -->
+<script>
+  function initAboutBestSection() {
+    const bestSection = document.getElementById('best-section') as HTMLElement | null;
+    const bestWrapper = document.getElementById('best-wrapper') as HTMLElement | null;
+    if (!bestSection) return;
+
+    const controller = new AbortController();
+    document.addEventListener('astro:before-swap', () => controller.abort(), { once: true });
+
+    const bestStages = Array.from(bestSection.querySelectorAll<HTMLElement>('.best-stage'));
+    const bestProgress = document.getElementById('best-progress');
+    const bestStageNum = document.getElementById('best-stage-num');
+
+    function progressFor(section: HTMLElement) {
+      const rect = section.getBoundingClientRect();
+      const total = section.offsetHeight - window.innerHeight;
+      if (total <= 0) return 0;
+      return Math.min(1, Math.max(0, -rect.top / total));
+    }
+
+    function updateBest() {
+      if (bestStages.length === 0) return;
+      const p = progressFor(bestSection!);
+      const idx = Math.min(bestStages.length - 1, Math.floor(p * bestStages.length));
+
+      bestStages.forEach((s, i) => {
+        s.classList.toggle('is-active', i === idx);
+        s.classList.toggle('is-past',   i <  idx);
+      });
+
+      if (bestProgress) (bestProgress as HTMLElement).style.transform = `scaleX(${p})`;
+      if (bestStageNum) bestStageNum.textContent = String(idx + 1).padStart(2, '0');
+
+      if (bestWrapper && bestSection) {
+        const vh = window.innerHeight;
+        const wrapperRect = bestWrapper.getBoundingClientRect();
+        const wrapperHeight = bestWrapper.offsetHeight;
+        const wrapperTotal = wrapperHeight - vh;
+
+        const wp = wrapperTotal > 0
+          ? Math.min(1, Math.max(0, -wrapperRect.top / wrapperTotal))
+          : 0;
+
+        const approachP = Math.max(0, Math.min(1, (vh - wrapperRect.top) / vh));
+        const wpEarlyT = Math.min(1, wp / 0.10);
+        const combinedT = approachP * 0.5 + wpEarlyT * 0.5;
+        const entryWeight = Math.pow(1 - combinedT, 3);
+
+        const sectionOffsetTop = bestSection.offsetTop;
+        const sectionScrollRange = bestSection.offsetHeight - vh;
+        const wpAmbiguityStart = wrapperTotal > 0
+          ? sectionOffsetTop / wrapperTotal
+          : 0.42;
+        const wpAmbiguityEnd = wrapperTotal > 0 && sectionScrollRange > 0
+          ? wpAmbiguityStart + (0.5 * sectionScrollRange) / wrapperTotal
+          : wpAmbiguityStart + 0.15;
+
+        let orbitInput;
+        if (wp <= wpAmbiguityStart) {
+          orbitInput = wp;
+        } else if (wp <= wpAmbiguityEnd) {
+          orbitInput = wpAmbiguityStart;
+        } else {
+          orbitInput = wpAmbiguityStart + (wp - wpAmbiguityEnd);
+        }
+
+        const orbitT = wpAmbiguityStart > 0
+          ? Math.max(0, Math.min(1, wp / wpAmbiguityStart))
+          : 1;
+        const orbitSmooth = orbitT * orbitT * (3 - 2 * orbitT);
+        const orbitWeight = 0.30 + 0.70 * orbitSmooth;
+
+        const tau = Math.PI * 2;
+
+        const g1xEntry = -65 * entryWeight;
+        const g2xEntry =  65 * entryWeight;
+        const g3yEntry = -45 * entryWeight;
+
+        const g1x = orbitWeight * Math.sin(orbitInput * tau * 2.2) * 32 + g1xEntry;
+        const g1y = orbitWeight * Math.cos(orbitInput * tau * 1.3) * 38;
+        const g1s = 1 + orbitWeight * Math.sin(orbitInput * tau * 2.8) * 0.25;
+
+        const g2x = orbitWeight * Math.cos(orbitInput * tau * 1.8 + 1.0) * 36 + g2xEntry;
+        const g2y = orbitWeight * Math.sin(orbitInput * tau * 2.1 + 0.7) * 32;
+        const g2s = 1 + orbitWeight * Math.cos(orbitInput * tau * 2.0) * 0.27;
+
+        const g3x = orbitWeight * Math.sin(orbitInput * tau * 1.0 + 2.5) * 28;
+        const g3y = orbitWeight * Math.cos(orbitInput * tau * 1.7 + 1.5) * 24 + g3yEntry;
+        const g3s = 1 + orbitWeight * Math.sin(orbitInput * tau * 1.2) * 0.20;
+
+        bestWrapper.style.setProperty('--g1x', `${g1x.toFixed(2)}vw`);
+        bestWrapper.style.setProperty('--g1y', `${g1y.toFixed(2)}vh`);
+        bestWrapper.style.setProperty('--g1s', g1s.toFixed(3));
+        bestWrapper.style.setProperty('--g2x', `${g2x.toFixed(2)}vw`);
+        bestWrapper.style.setProperty('--g2y', `${g2y.toFixed(2)}vh`);
+        bestWrapper.style.setProperty('--g2s', g2s.toFixed(3));
+        bestWrapper.style.setProperty('--g3x', `${g3x.toFixed(2)}vw`);
+        bestWrapper.style.setProperty('--g3y', `${g3y.toFixed(2)}vh`);
+        bestWrapper.style.setProperty('--g3s', g3s.toFixed(3));
+      }
+    }
+
+    let pending = false;
+    function onScroll() {
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(() => {
+        pending = false;
+        updateBest();
+      });
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true, signal: controller.signal });
+    window.addEventListener('resize', onScroll, { passive: true, signal: controller.signal });
+    updateBest();
+  }
+
+  document.addEventListener('astro:page-load', initAboutBestSection);
+</script>
