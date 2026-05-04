@@ -1,24 +1,64 @@
 ---
 interface Props {
   title?: string;
+  description?: string;
+  ogImage?: string;
   hideFooter?: boolean;
   hideNav?: boolean;
 }
 
-const { title = 'Kenny Raymond - Product Designer', hideFooter = false, hideNav = false } = Astro.props;
+const {
+  title = 'Kenny Raymond - Product Designer',
+  description = 'Kenny Raymond is a Staff Product Designer with 10+ years of experience shaping high-impact consumer and B2B products at LinkedIn, Facebook, and Workday. Based in Los Angeles.',
+  ogImage = '/bw-ken-big.png',
+  hideFooter = false,
+  hideNav = false,
+} = Astro.props;
 import '../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
+
+const siteOrigin = Astro.site?.toString().replace(/\/$/, '') ?? '';
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://www.kenny-raymond.com').toString();
+const absoluteOgImage = ogImage.startsWith('http')
+  ? ogImage
+  : `${siteOrigin}${ogImage.startsWith('/') ? ogImage : `/${ogImage}`}`;
 ---
 
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary meta -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Favicons -->
     <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Kenny Raymond" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={absoluteOgImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={absoluteOgImage} />
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <title>{title}</title>
+
     <ClientRouter />
   </head>
   <body>
@@ -55,7 +95,7 @@ import { ClientRouter } from 'astro:transitions';
     <!-- Menu overlay -->
     <div id="menu-overlay" class="fixed inset-0 bg-black z-40 flex flex-col items-center justify-center gap-16 md:gap-16 opacity-0 pointer-events-none transition-opacity duration-300 ease-in-out">
       <a href="/" class="text-white text-5xl md:text-[5.625rem] font-medium opacity-0 translate-y-6 transition-all duration-300 ease-out">Home</a>
-      <a href="/work" class="text-white text-5xl md:text-[5.625rem] font-medium opacity-0 translate-y-6 transition-all duration-300 ease-out">Work</a>
+      <a href="/#work-section" id="menu-link-work" class="text-white text-5xl md:text-[5.625rem] font-medium opacity-0 translate-y-6 transition-all duration-300 ease-out">Work</a>
       <a href="/about" class="text-white text-5xl md:text-[5.625rem] font-medium opacity-0 translate-y-6 transition-all duration-300 ease-out">About</a>
     </div>
     </>}
@@ -91,7 +131,7 @@ import { ClientRouter } from 'astro:transitions';
           rel="noopener noreferrer"
           class="group flex items-center gap-1 text-base text-white/80 hover:text-white transition-colors duration-200"
         >
-          Soundcloud
+          SoundCloud
           <img src="/Footer Social Arrow.png" alt="" class="w-3 h-3 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </a>
       </div>
@@ -215,11 +255,29 @@ import { ClientRouter } from 'astro:transitions';
           };
         });
 
-        // After DOM swap: reset scroll, reset body bg color (home page cards mutate it),
-        // then hold the panel at full cover for a beat before uncovering.
+        // After DOM swap: reset scroll (or land at hash target), reset body bg
+        // color (home page cards mutate it), then hold the panel at full cover
+        // for a beat before uncovering.
         document.addEventListener('astro:after-swap', () => {
-          window.scrollTo(0, 0);
-          window.__lenis?.scrollTo(0, { immediate: true });
+          const hash = window.location.hash;
+          let target: HTMLElement | null = null;
+          if (hash && hash.length > 1) {
+            try {
+              target = document.querySelector(hash) as HTMLElement | null;
+            } catch {
+              target = null;
+            }
+          }
+
+          if (target) {
+            const top = target.getBoundingClientRect().top + window.scrollY;
+            window.scrollTo(0, top);
+            window.__lenis?.scrollTo(top, { immediate: true });
+          } else {
+            window.scrollTo(0, 0);
+            window.__lenis?.scrollTo(0, { immediate: true });
+          }
+
           document.body.style.backgroundColor = '';
           window.setTimeout(() => uncover(), HOLD_MS);
         });
@@ -372,6 +430,30 @@ import { ClientRouter } from 'astro:transitions';
           // Menu links don't close the menu on click — it stays open as the
           // backdrop while the reveal panel plays. The new page loads with a
           // fresh (closed) menu instance via ClientRouter swap.
+          //
+          // Exception: the Work link is a same-page anchor (/#work-section)
+          // when already on home, so ClientRouter never fires. Handle that
+          // explicitly by closing the menu and smooth-scrolling to the target.
+          const workLink = document.getElementById('menu-link-work') as HTMLAnchorElement | null;
+          if (workLink) {
+            workLink.addEventListener('click', (e) => {
+              if (window.location.pathname === '/') {
+                e.preventDefault();
+                closeMenu();
+                const target = document.getElementById('work-section');
+                if (target) {
+                  const top = target.getBoundingClientRect().top + window.scrollY;
+                  if (window.__lenis) {
+                    window.__lenis.scrollTo(top, { duration: 1.2 });
+                  } else {
+                    window.scrollTo({ top, behavior: 'smooth' });
+                  }
+                  // Update the URL hash without re-triggering scroll
+                  history.replaceState(null, '', '/#work-section');
+                }
+              }
+            });
+          }
         }
       }
 

@@ -48,8 +48,8 @@ Use these files exactly — do not rename them.
 - `SoundCloud Logo Icon (1).png` — SoundCloud icon
 
 ### About / Portrait
-- `b&w ken big.png` — large black and white portrait (used on About page)
-- `b&w ken sm.png` — smaller black and white portrait (used on Home or secondary)
+- `bw-ken-big.png` — large black and white portrait (used on About page; also default OG image)
+- `bw-ken-sm.png` — smaller black and white portrait (used on Home portrait + intro)
 - `li 100.png` — LinkedIn logo mark (used somewhere in About or nav)
 
 ### Work Page — Project Tiles

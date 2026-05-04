@@ -5,11 +5,18 @@ interface Props {
   title: string;
   subtitle?: string;
   pageTitle?: string;
+  description?: string;
+  ogImage?: string;
 }
 
-const { title, subtitle, pageTitle } = Astro.props;
+const { title, subtitle, pageTitle, description, ogImage } = Astro.props;
 ---
-<Layout title={pageTitle ?? `${title} - Kenny Raymond`} hideFooter={true}>
+<Layout
+  title={pageTitle ?? `${title} - Kenny Raymond`}
+  description={description ?? subtitle}
+  ogImage={ogImage}
+  hideFooter={true}
+>
 
   <!-- Page title -->
   <section data-no-reveal class="project-title px-3 md:px-36 lg:px-64 pt-32 md:pt-24 pb-10 md:pb-20">
@@ -27,7 +34,7 @@ const { title, subtitle, pageTitle } = Astro.props;
 
   <!-- Back link -->
   <section class="flex justify-center py-16 md:py-24">
-    <a href="/work" class="text-white text-[2.5rem] md:text-[2.8125rem] font-medium">
+    <a href="/#work-section" class="text-white text-[2.5rem] md:text-[2.8125rem] font-medium">
       ← More Projects
     </a>
   </section>

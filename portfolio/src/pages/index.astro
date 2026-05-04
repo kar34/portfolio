@@ -4,7 +4,11 @@ import WorkCards from '../components/WorkCards.astro';
 import WorkIndex from '../components/WorkIndex.astro';
 ---
 
-<Layout>
+<Layout
+  title="Kenny Raymond - Product Designer"
+  description="Kenny Raymond is a Staff Product Designer based in Los Angeles. 10+ years shaping high-impact consumer and B2B products at LinkedIn, Facebook, and Workday."
+  ogImage="/bw-ken-big.png"
+>
   <!-- Hero wrapper — 150svh gives the sticky section 50svh of scroll to complete all exits.
        svh (small viewport height) locks the hero dimensions to the smallest viewport state
        so the mobile URL bar retracting/expanding doesn't cause content to jitter mid-scroll. -->
@@ -28,7 +32,7 @@ import WorkIndex from '../components/WorkIndex.astro';
       <!-- Portrait — always column 2 (center) -->
       <div class="hero-portrait col-start-2 w-[clamp(152px,13vw,280px)] h-[clamp(152px,13vw,280px)] rounded-full overflow-hidden flex-shrink-0 my-4 md:my-0 ring-[5px] ring-white">
         <img
-          src="/b&w ken sm.png"
+          src="/bw-ken-sm.png"
           alt="Kenny Raymond portrait"
           class="w-full h-full object-cover"
         />
@@ -266,8 +270,7 @@ import WorkIndex from '../components/WorkIndex.astro';
     const cardIds = Object.keys(cardColors);
 
     // Only runs on the home page — gated on the presence of #work-heading
-    // (the sticky WORK heading id). On /work, a separate script handles
-    // card colors with slightly different activation logic.
+    // (the sticky WORK heading id).
     if (!document.getElementById('work-heading')) return;
     if (!document.getElementById(cardIds[0])) return;
 
