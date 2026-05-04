@@ -1,5 +1,6 @@
 ---
 import Layout from './Layout.astro';
+import { getNextProject, getPrevProject } from '../data/projects';
 
 interface Props {
   title: string;
@@ -7,9 +8,13 @@ interface Props {
   pageTitle?: string;
   description?: string;
   ogImage?: string;
+  slug: string;
 }
 
-const { title, subtitle, pageTitle, description, ogImage } = Astro.props;
+const { title, subtitle, pageTitle, description, ogImage, slug } = Astro.props;
+
+const prev = getPrevProject(slug);
+const next = getNextProject(slug);
 ---
 <Layout
   title={pageTitle ?? `${title} - Kenny Raymond`}
@@ -32,12 +37,56 @@ const { title, subtitle, pageTitle, description, ogImage } = Astro.props;
 
   <slot />
 
-  <!-- Back link -->
-  <section class="flex justify-center py-16 md:py-24">
-    <a href="/#work-section" class="text-white text-[2.5rem] md:text-[2.8125rem] font-medium">
-      ← More Projects
-    </a>
+  <!-- Prev / More Projects / Next — mobile stacks in same reading order as desktop -->
+  <section class="border-t border-white/15 px-6 md:px-12 lg:px-24 py-12 md:py-24">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-20 md:gap-8 items-center">
+
+      <!-- Previous (column 1 / row 1) -->
+      <a
+        href={prev.href}
+        class="project-nav-link group flex flex-col items-center md:items-start text-center md:text-left order-1"
+      >
+        <span class="project-nav-eyebrow text-xs md:text-sm uppercase tracking-[0.25em] text-white/50 mb-2 md:mb-3 transition-colors">
+          ← Previous
+        </span>
+        <span class="project-nav-name text-3xl md:text-4xl font-medium text-white/70 tracking-tight transition-colors">
+          {prev.name}
+        </span>
+      </a>
+
+      <!-- More Projects — escape hatch (column 2 / row 2) -->
+      <a
+        href="/#work-section"
+        class="project-nav-more text-white/60 text-base md:text-xl font-medium hover:text-white transition-colors text-center order-2"
+      >
+        More Projects
+      </a>
+
+      <!-- Next (column 3 / row 3) -->
+      <a
+        href={next.href}
+        class="project-nav-link group flex flex-col items-center md:items-end text-center md:text-right order-3"
+      >
+        <span class="project-nav-eyebrow text-xs md:text-sm uppercase tracking-[0.25em] text-white/50 mb-2 md:mb-3 transition-colors">
+          Next →
+        </span>
+        <span class="project-nav-name text-3xl md:text-4xl font-medium text-white/70 tracking-tight transition-colors">
+          {next.name}
+        </span>
+      </a>
+
+    </div>
   </section>
+
+  <style>
+    /* Treat the whole Prev/Next link as one hoverable region — both lines
+       brighten together so the cursor never appears to enter/leave between
+       sibling text nodes. */
+    .project-nav-link:hover .project-nav-eyebrow,
+    .project-nav-link:hover .project-nav-name {
+      color: rgb(255 255 255);
+    }
+  </style>
 
   <!-- Mobile image lightbox — stays mounted; opacity + scale drive the transition -->
   <div id="lightbox" class="fixed inset-0 bg-black z-[100] opacity-0 pointer-events-none">

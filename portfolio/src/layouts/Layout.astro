@@ -357,22 +357,49 @@ const absoluteOgImage = ogImage.startsWith('http')
         const hoverSelector = 'a, button, [role="button"], input[type="submit"], input[type="button"], label[for], .img-clickable';
         const caseStudySelector = '.parallax-card';
 
+        // Compare closest hoverable ancestor of `target` and `relatedTarget`
+        // so transitions between children of the same anchor don't flicker
+        // the cursor state. Only crossing the boundary of the matching
+        // ancestor toggles the class.
+        const closestMatch = (el: EventTarget | null, sel: string): Element | null => {
+          if (!el || !(el as HTMLElement).closest) return null;
+          return (el as HTMLElement).closest(sel);
+        };
+
         document.addEventListener('mouseover', (e) => {
           const target = e.target as HTMLElement;
+          const related = e.relatedTarget;
           if (!target || !target.closest) return;
-          if (target.closest(caseStudySelector)) {
+
+          const cardT = closestMatch(target, caseStudySelector);
+          const cardR = closestMatch(related, caseStudySelector);
+          if (cardT && cardT !== cardR) {
             cursor.classList.add('is-case-study');
-          } else if (target.closest(hoverSelector)) {
+            return;
+          }
+
+          const hoverT = closestMatch(target, hoverSelector);
+          const hoverR = closestMatch(related, hoverSelector);
+          if (hoverT && hoverT !== hoverR) {
             cursor.classList.add('is-hover');
           }
         });
 
         document.addEventListener('mouseout', (e) => {
           const target = e.target as HTMLElement;
+          const related = e.relatedTarget;
           if (!target || !target.closest) return;
-          if (target.closest(caseStudySelector)) {
+
+          const cardT = closestMatch(target, caseStudySelector);
+          const cardR = closestMatch(related, caseStudySelector);
+          if (cardT && cardT !== cardR) {
             cursor.classList.remove('is-case-study');
-          } else if (target.closest(hoverSelector)) {
+            return;
+          }
+
+          const hoverT = closestMatch(target, hoverSelector);
+          const hoverR = closestMatch(related, hoverSelector);
+          if (hoverT && hoverT !== hoverR) {
             cursor.classList.remove('is-hover');
           }
         });
