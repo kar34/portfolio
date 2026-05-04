@@ -1,0 +1,7 @@
+# macOS
+.DS_Store
+
+# Microsoft Word — documents and open-file lock markers
+*.docx
+*.doc
+~$*
