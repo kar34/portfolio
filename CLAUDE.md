@@ -190,3 +190,6 @@ Read these before writing any code. They are the source of truth for layout, spa
 - Do not invent design decisions not visible in the Mocks or live site
 - Do not add features beyond what exists on the current site
 - Do not upgrade or modify the existing site on Webflow
+
+## Local Context (not committed)
+If `EVALUATION.md` exists at the repo root, read it before making copy, positioning, or content decisions. It captures the hiring-manager evaluation, the changes shipped, Kenny's preferences (e.g., do-not-publish items), and intentional design choices that should not be "fixed" (e.g., the AMBIGUITY/building expressive typography on About). The file is gitignored — local only.
