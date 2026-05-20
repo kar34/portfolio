@@ -8,3 +8,8 @@
 
 # Local-only context / notes (not for the public repo)
 EVALUATION.md
+
+# Mocks/ is Kenny's private workspace — local-only progress screenshots and
+# reference images. Nothing in this folder should be published. The original
+# Webflow reference jpegs were removed from the repo once the rebuild shipped.
+Mocks/

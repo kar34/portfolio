@@ -1,16 +1,12 @@
-# Kenny Raymond Portfolio — Rebuild
+# Kenny Raymond Portfolio
 
-## Project Goal
-Build a pixel-perfect replica of kenny-raymond.com as a clean, static Astro + Tailwind CSS site. The goal is an exact replica — same look, same feel, same content, same layout. Not just "visually similar" — it should be indistinguishable when viewed side by side with the original. The underlying code does not need to match Webflow's output, but the rendered result must be identical. Animations are deferred — do not implement scroll animations, hover transitions, or entrance effects in the initial build.
+## Project Status
+The original kenny-raymond.com (built in Webflow) has been fully rebuilt as a static Astro + Tailwind site and migrated over. Webflow is no longer in use and is no longer a reference. From here on, work is incremental — improvements, new content, copy tweaks, and updates to the deployed Astro site. The code in `portfolio/` is the source of truth.
 
 ## Ask Before Assuming
-If you are ever unsure about a styling detail, spacing value, color, layout behavior, font size, or anything else visual — ask. Do not guess or invent. The user can open Webflow at any time to provide exact values, missing assets, or additional context. When in doubt, stop and ask.
+If you are unsure about a styling detail, spacing value, color, layout behavior, font size, copy choice, or anything else visual — ask. Do not guess or invent. Kenny can provide exact values, missing assets, or additional context at any time. When in doubt, stop and ask.
 
-## First Step
-Before doing anything else: WebFetch all 6 URLs below and read all Mocks/ images to understand the full site structure and visual design. Do not start writing code until you have done this.
-
-## Live Site Reference URLs
-Scrape these to get all copy, structure, and content:
+## Live Site
 - https://www.kenny-raymond.com/
 - https://www.kenny-raymond.com/work
 - https://www.kenny-raymond.com/about
@@ -28,10 +24,10 @@ Scrape these to get all copy, structure, and content:
 ## Directory Structure
 ```
 NewPortfolioSite/
-├── Assets/       ← all images, icons, GIFs used in the site
-├── Mocks/        ← full-page desktop + mobile screenshots of every page
+├── Assets/       ← source images, icons, GIFs (copied into portfolio/public/ as needed)
+├── Mocks/        ← local-only progress screenshots (gitignored, not in the repo)
 ├── CLAUDE.md     ← this file
-└── portfolio/    ← Astro project goes here
+└── portfolio/    ← the Astro project — source of truth for the live site
 ```
 
 ## Assets Inventory (`Assets/`)
@@ -75,23 +71,7 @@ Use these files exactly — do not rename them.
 - `nbfmocks2.png` — design improvement mockups
 - `nbfbottom.png` — bottom section image
 
-## Mocks Inventory (`Mocks/`)
-Read these before writing any code. They are the source of truth for layout, spacing, and visual design.
-
-| File | Page |
-|---|---|
-| `HomeDesktop.jpeg` | Home page — desktop |
-| `HomeMobile.jpeg` | Home page — mobile |
-| `AboutDesktop.jpeg` | About page — desktop |
-| `AboutMobile.jpeg` | About page — mobile |
-| `LinkedInVideoProjectPageDesktop.jpeg` | LinkedIn Video case study — desktop |
-| `LinkedInVideoProjectPageMobile.jpeg` | LinkedIn Video case study — mobile |
-| `ReactionsProjectPageDesktop.jpeg` | Reactions case study — desktop |
-| `ReactionsProjectPageMobile.jpeg` | Reactions case study — mobile |
-| `NearbyFriendsProjectPageDesktop.jpeg` | Nearby Friends case study — desktop |
-| `NearbyFriendsProjectPageMobile.jpeg` | Nearby Friends case study — mobile |
-
-## Design System (inferred from live site)
+## Design System
 - **Color palette:** Black and white only — monochromatic
 - **Font:** Poppins, weights 400 / 500 / 600
 - **Style:** Minimalist, high whitespace, no decorative elements
@@ -99,9 +79,9 @@ Read these before writing any code. They are the source of truth for layout, spa
 - **Nav:** Logo (name) left, links (Work, About) right — collapses to hamburger on mobile
 - **Footer:** Name repeated, three social links with arrow icons (LinkedIn, Email, SoundCloud)
 
-## Pages to Build
+## Pages
 1. **Home** — hero with name/title/location, brief bio, project grid (3 cards)
-2. **Work** — project grid (same 3 cards, may be same as Home or separate page)
+2. **Work** — project grid (same 3 cards as Home)
 3. **About** — portrait image, bio copy, social links
 4. **Project: LinkedIn Video** — hero, overview, impact, GIF, mockups
 5. **Project: LinkedIn Reactions** — hero, overview, impact, GIF, before/after
@@ -112,12 +92,12 @@ Read these before writing any code. They are the source of truth for layout, spa
 - Email: kennyraymond20@gmail.com
 - SoundCloud: username dj-m3lodic
 
-## Build Approach
-- Use GSD for phase planning — keep phases small and executable
-- Build and verify one page at a time against the Mocks/
-- Mobile-first responsive — check HomeMobile.jpeg and other mobile mocks
-- Use Astro's file-based routing — one .astro file per page, one layout component
-- Copy assets from Assets/ into the Astro project's public/ folder
+## Working Approach
+- Use GSD for phase planning when changes are non-trivial — keep phases small and executable
+- Mobile-first responsive — check both mobile and desktop after every visual change
+- Astro file-based routing — one `.astro` file per page, shared layout component
+- Copy any new assets from `Assets/` into the Astro project's `public/` folder
+- The live deployed site and the code in `portfolio/` are the source of truth — there is no longer a Webflow or Mocks reference
 
 ## Local Dev Server
 - The dev server runs at **http://localhost:4321**
@@ -187,9 +167,17 @@ Read these before writing any code. They are the source of truth for layout, spa
 - Social links have hover effects: `group hover:text-white` with arrow nudge `group-hover:translate-x-0.5 group-hover:-translate-y-0.5`
 
 ## What NOT to Do
-- Do not invent design decisions not visible in the Mocks or live site
-- Do not add features beyond what exists on the current site
-- Do not upgrade or modify the existing site on Webflow
+- Do not invent design decisions inconsistent with the deployed site's established style
+- Do not add features beyond what was requested for the current improvement
+- Do not reintroduce Webflow as a reference — that platform is no longer used
+- Do not add reference mocks or screenshots to the public repo without Kenny's explicit ask
 
-## Local Context (not committed)
-If `EVALUATION.md` exists at the repo root, read it before making copy, positioning, or content decisions. It captures the hiring-manager evaluation, the changes shipped, Kenny's preferences (e.g., do-not-publish items), and intentional design choices that should not be "fixed" (e.g., the AMBIGUITY/building expressive typography on About). The file is gitignored — local only.
+## Local Context (not committed — never publish)
+The repo is public on GitHub. The files below live locally for Claude's reference but must never end up in the public repo. They are gitignored. Do not stage them, do not suggest committing them, do not move them to a tracked location, and do not echo their contents into tracked files (e.g., README, blog copy, PR descriptions). If you see a new evaluative or screenshot-style file appear in the working tree, assume local-only and confirm with Kenny before any `git add`.
+
+Local-only files:
+- `EVALUATION.md` — hiring-manager evaluation of the live site for a staff product designer candidacy, the changes shipped in response, Kenny's preferences (e.g., do-not-publish items), and intentional design choices that should not be "fixed" (e.g., the AMBIGUITY/building expressive typography on About). Read this before making copy, positioning, or content decisions.
+- `Kenny_Raymond_Portfolio_Evaluation.docx` and any other `*.docx` / `*.doc` — the Word version of the same evaluation plus any related private notes. Covered by the `*.docx` / `*.doc` rules in `.gitignore`.
+- `Mocks/` (entire folder) — Kenny's personal screenshots of the deployed site for his own progress tracking and reference (e.g., `home.png`, `about.png`, `video_casestudy.png`, `reactions_casestudy.png`, `nbf_casestudy.png`). The original Webflow reference jpegs that used to live here were removed when the rebuild completed and should not be restored to the repo. The whole folder is gitignored.
+
+Rule of thumb: anything in `Mocks/` is local-only. The entire folder is Kenny's private workspace, not a public reference. If Kenny later asks to add new mocks or references, confirm whether they should be tracked before staging.
