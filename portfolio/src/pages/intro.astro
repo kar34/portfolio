@@ -286,7 +286,7 @@ const stops = [
     <div class="best-aurora absolute inset-0 pointer-events-none" aria-hidden="true">
       <div class="best-aurora-inner sticky top-0 h-[100svh] w-full">
         <div class="best-glow">
-          <!-- Third spotlight (yellow accent) — slower orbit, lower opacity -->
+          <!-- Third spotlight (pink accent) — slower orbit, lower opacity -->
           <div class="best-glow-third"></div>
         </div>
       </div>
@@ -490,9 +490,8 @@ const stops = [
       translate(var(--g2x, 0), var(--g2y, 0))
       scale(var(--g2s, 1));
   }
-  /* Third spotlight — yellow accent (#f5bb5c, page palette).
-     Smaller, lower opacity, slower orbit — adds a third moving light
-     without crowding the primary purple/blue. */
+  /* Third spotlight — pink accent. Smaller, lower opacity, slower orbit —
+     adds a third moving light without crowding the primary purple/blue. */
   .best-glow-third {
     position: absolute;
     width: 70vw;
@@ -500,7 +499,7 @@ const stops = [
     left: 18vw;
     top: 12vh;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(245, 187, 92, 0.30), transparent 65%);
+    background: radial-gradient(circle, rgba(232, 121, 198, 0.28), transparent 65%);
     filter: blur(150px);
     will-change: transform;
     transition: transform 0.18s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -891,7 +890,7 @@ const stops = [
         // Convergence offsets — spotlights enter from off-screen edges
         const g1xEntry = -65 * entryWeight;  // purple from far left
         const g2xEntry =  65 * entryWeight;  // blue from far right
-        const g3yEntry = -45 * entryWeight;  // yellow from above
+        const g3yEntry = -45 * entryWeight;  // pink from above
 
         // Purple
         const g1x = orbitWeight * Math.sin(orbitInput * tau * 2.2) * 32 + g1xEntry;
