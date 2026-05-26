@@ -119,12 +119,12 @@ const stops = [
       </div>
     </div>
 
-    <!-- About overlay — starts off-screen right, slides to center on scroll.
-         Styling mirrors the home page's About block: text-[22vw] / md:text-7xl
-         heading, scaled body copy. Text is left-aligned within a centered
-         max-width block so the portrait sits to its left when both have arrived. -->
-    <div class="intro-about-slide absolute inset-0 flex flex-col items-end justify-center px-[6vw] md:px-[8vw] will-change-transform" style="transform: translateX(100vw)">
-      <div class="md:max-w-[35vw]">
+    <!-- About overlay — text-only, slides in from off-screen right. The
+         inner block is centered then nudged slightly right (translate-x-[8vw])
+         so the [portrait + About] combo's bounding box lands centered. The
+         hero portrait scales/slides on its own; it doesn't fade. -->
+    <div class="intro-about-slide absolute inset-0 flex items-center justify-center px-[6vw] md:px-[8vw] will-change-transform" style="transform: translateX(100vw)">
+      <div class="md:max-w-[35vw] md:translate-x-[13vw]">
         <h2 class="text-[22vw] md:text-7xl font-semibold uppercase tracking-tight text-left leading-none">
           About
         </h2>
@@ -145,7 +145,7 @@ const stops = [
   >
 
     <!-- Section title -->
-    <header class="px-[6vw] md:px-[8vw] text-center mb-24 md:mb-40">
+    <header class="px-[6vw] md:px-[8vw] text-center mb-56 md:mb-72">
       <h2 class="text-[14vw] md:text-[10vw] leading-[0.9] font-semibold uppercase tracking-tighter">
         My Background
       </h2>
@@ -650,7 +650,7 @@ const stops = [
       }
       if (heroPortraitWrapEl) {
         const portraitScale = 1 - progress * 0.55;        // 1 → 0.45
-        const portraitX     = isMobile ? 0 : -progress * 30;  // 0 → -30vw on desktop
+        const portraitX     = isMobile ? 0 : -progress * 40;  // 0 → -40vw on desktop
         heroPortraitWrapEl.style.transform = `translateX(${portraitX}vw) scale(${portraitScale})`;
       }
       if (aboutSlideEl) {
