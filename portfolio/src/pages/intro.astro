@@ -639,12 +639,14 @@ const stops = [
   /* ── "Energy" EKG trace ──
      Heart-rate monitor signal under the headline. Two SVG layers:
      (a) faint ghost path showing the full waveform at rest,
-     (b) bright "comet" of light that draws across the path.
+     (b) bright "comet" of light that crosses the path.
      The comet is drawn via animated stroke-dashoffset driven by rAF in
-     initEnergyEkg (script below). Constant cadence; the dash gap is set
-     larger than pathLen so only one comet is ever visible at a time.
-     Same "typography IS the concept" pattern as ambiguity / building —
-     the trace makes "Energy" read as a live vitals signal. */
+     initEnergyEkg (script below) on a three-phase cycle —
+     CROSS (head traverses 0→pathLen), EXIT (tail follows off the right),
+     PAUSE (no comet) — so it crosses fully, exits cleanly, then rests
+     for ~1s before pulsing again. Same "typography IS the concept"
+     pattern as ambiguity / building — trace makes "Energy" read as
+     a live vitals signal. */
   .ekg-active {
     transition: none;
   }
@@ -1037,27 +1039,46 @@ const stops = [
     const pathLen  = active.getTotalLength();
     const tailFrac = 0.38;                        // comet length as % of path
     const tailLen  = pathLen * tailFrac;
-    const totalRange = pathLen + tailLen;         // travel distance per cycle
 
-    // Gap is set much larger than pathLen so the dash pattern's *next*
-    // iteration is always off-path — guarantees only ONE comet on the
-    // trace at a time (otherwise the next dash would start entering at
-    // the left as the current one exits on the right).
+    // Gap is much larger than pathLen so the dash pattern's *next*
+    // iteration is always off-path — guarantees only ONE comet visible.
     active.style.strokeDasharray = `${tailLen} ${pathLen * 3}`;
 
     const controller = new AbortController();
     document.addEventListener('astro:before-swap', () => controller.abort(), { once: true });
 
-    const cycle = 1700;                           // ms; constant — no jitter
+    // Three-phase cycle so the comet visibly crosses the *full* width
+    // before exiting, then pauses:
+    //   - CROSS: head linearly traverses 0 → pathLen across the screen
+    //   - EXIT:  tail follows out, the comet leaves the right edge cleanly
+    //   - PAUSE: dash held off-path, no comet visible
+    const CROSS = 1500;
+    const EXIT  = 400;
+    const PAUSE = 1100;
+    const cycle = CROSS + EXIT + PAUSE;
+    const offPath = pathLen + tailLen + 10;
+
     let startTime: number | null = null;
     let rafId = 0;
 
     function tick(now: number) {
       if (startTime === null) startTime = now;
-      const t = ((now - startTime) % cycle) / cycle;
+      const elapsed = (now - startTime) % cycle;
+      let dashStart: number;
 
-      // Shift the dash pattern so the visible comet rides the leading edge.
-      const dashStart = t * totalRange - tailLen;
+      if (elapsed < CROSS) {
+        // Cross phase — head moves 0 → pathLen, tail trails behind
+        const s = elapsed / CROSS;
+        dashStart = s * pathLen - tailLen;
+      } else if (elapsed < CROSS + EXIT) {
+        // Exit phase — tail follows the head off the right edge
+        const s = (elapsed - CROSS) / EXIT;
+        dashStart = (pathLen - tailLen) + s * tailLen;
+      } else {
+        // Pause phase — comet parked off-path, ghost baseline stays
+        dashStart = offPath;
+      }
+
       active.style.strokeDashoffset = String(-dashStart);
 
       if (!controller.signal.aborted) {
