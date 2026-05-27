@@ -286,8 +286,8 @@ const stops = [
   <!-- Section intro: layered hierarchy — supporting line / poster line -->
   <section class="relative z-10 pt-80 md:pt-[24rem] pb-24 md:pb-32 px-[6vw] md:px-[8vw] text-center">
     <h2 class="best-intro-heading max-w-6xl mx-auto">
-      <span class="block text-[5.25vw] md:text-[3.15vw] uppercase font-semibold tracking-wider text-white/75 leading-none mb-5 md:mb-7">Where I get my</span>
-      <span class="block text-[14vw] md:text-[10.5vw] font-semibold uppercase tracking-tighter leading-[0.85] whitespace-nowrap">Energy</span>
+      <span class="block text-[6.3vw] md:text-[3.8vw] uppercase font-semibold tracking-wider text-white/75 leading-none mb-5 md:mb-7">Where I get my</span>
+      <span class="stage-energy block text-[17vw] md:text-[12.6vw] font-semibold uppercase tracking-tighter leading-[0.85] whitespace-nowrap">Energy</span>
     </h2>
   </section>
 
@@ -582,6 +582,35 @@ const stops = [
   @keyframes ambiguityBlur {
     0%, 100% { filter: blur(0); }
     50%      { filter: blur(4px); }
+  }
+
+  /* ── "Energy" text effect ──
+     Same family of move as ambiguity / building: typography IS the concept.
+     The word radiates light on a fast beat — pulsing white halo + tight
+     scale "throb" — so it visually reads as alive / electric / charged.
+     Two animations sharing the same ~1.4s cycle (vs ambiguity's slow 5s
+     drift) so the energy feels insistent rather than dreamy. */
+  .stage-energy {
+    animation:
+      energyGlow 1.4s ease-in-out infinite,
+      energyPulse 1.4s ease-in-out infinite;
+    will-change: transform, text-shadow;
+  }
+  @keyframes energyGlow {
+    0%, 100% {
+      text-shadow:
+        0 0 30px rgba(255, 255, 255, 0.25),
+        0 0 70px rgba(255, 255, 255, 0.08);
+    }
+    50% {
+      text-shadow:
+        0 0 55px rgba(255, 255, 255, 0.55),
+        0 0 120px rgba(255, 255, 255, 0.22);
+    }
+  }
+  @keyframes energyPulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.025); }
   }
 
 </style>
