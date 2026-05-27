@@ -637,14 +637,12 @@ const stops = [
   }
 
   /* ── "Energy" EKG trace ──
-     Heart-rate monitor signal under the headline. Three SVG layers:
+     Heart-rate monitor signal under the headline. Two SVG layers:
      (a) faint ghost path showing the full waveform at rest,
-     (b) bright "comet" of light that draws across the path,
-     (c) leading head dot that rides the front of the comet.
-     The comet is drawn via animated stroke-dashoffset and the head is
-     positioned via getPointAtLength — both driven by rAF in
-     initEnergyEkg (script below) for per-frame precision and a subtle
-     ±8% phase-jitter per cycle so the rhythm doesn't telegraph "CSS loop".
+     (b) bright "comet" of light that draws across the path.
+     The comet is drawn via animated stroke-dashoffset driven by rAF in
+     initEnergyEkg (script below). Constant cadence; the dash gap is set
+     larger than pathLen so only one comet is ever visible at a time.
      Same "typography IS the concept" pattern as ambiguity / building —
      the trace makes "Energy" read as a live vitals signal. */
   .ekg-active {
@@ -1037,30 +1035,26 @@ const stops = [
     }
 
     const pathLen  = active.getTotalLength();
-    const tailFrac = 0.38;                       // comet length as % of path
+    const tailFrac = 0.38;                        // comet length as % of path
     const tailLen  = pathLen * tailFrac;
-    const totalRange = pathLen + tailLen;        // travel distance per cycle
+    const totalRange = pathLen + tailLen;         // travel distance per cycle
 
-    active.style.strokeDasharray = `${tailLen} ${pathLen}`;
+    // Gap is set much larger than pathLen so the dash pattern's *next*
+    // iteration is always off-path — guarantees only ONE comet on the
+    // trace at a time (otherwise the next dash would start entering at
+    // the left as the current one exits on the right).
+    active.style.strokeDasharray = `${tailLen} ${pathLen * 3}`;
 
     const controller = new AbortController();
     document.addEventListener('astro:before-swap', () => controller.abort(), { once: true });
 
-    const baseCycle = 1700;                      // ms; ~35 BPM, alert but not frantic
-    let cycle = baseCycle;
+    const cycle = 1700;                           // ms; constant — no jitter
     let startTime: number | null = null;
     let rafId = 0;
 
     function tick(now: number) {
       if (startTime === null) startTime = now;
-      let t = ((now - startTime) % cycle) / cycle;
-
-      // When we wrap, re-randomize the next cycle's duration ±8% so the
-      // rhythm is steady-but-organic (real heart rate doesn't tick perfectly).
-      if (t < 0.005 && now - startTime > 100) {
-        const jitter = 0.92 + Math.random() * 0.16;  // 0.92..1.08
-        cycle = baseCycle * jitter;
-      }
+      const t = ((now - startTime) % cycle) / cycle;
 
       // Shift the dash pattern so the visible comet rides the leading edge.
       const dashStart = t * totalRange - tailLen;
