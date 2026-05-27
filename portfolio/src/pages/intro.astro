@@ -290,26 +290,62 @@ const stops = [
       <span class="block text-[17vw] md:text-[12.6vw] font-semibold uppercase tracking-tighter leading-[0.85] whitespace-nowrap">Energy</span>
     </h2>
 
-    <!-- Heart-rate EKG line — sweeps right-to-left across the viewport with
-         a single QRS spike per cycle, making the headline read as a live
-         vitals signal under the word "Energy". Full-bleed: -mx-[6vw] cancels
-         the section's horizontal padding so the trace spans 100vw. -->
-    <div class="energy-ekg-wrap relative mt-[5vh] md:mt-[7vh] -mx-[6vw] md:-mx-[8vw] h-[10vh] md:h-[12vh] overflow-hidden pointer-events-none">
+    <!-- Heart-rate EKG line — three-layer SVG signal beneath the headline.
+         (a) faint ghost shows the full waveform at rest, (b) bright "comet"
+         draws across via stroke-dashoffset, (c) head dot leads the comet.
+         Driven by a rAF loop (initEnergyEkg below) — the trace is drawn,
+         not slid. SVG filter glow blooms the active trace and head so the
+         signal radiates light, matching the "Energy" concept. -->
+    <div class="energy-ekg-wrap relative mt-[5vh] md:mt-[7vh] -mx-[6vw] md:-mx-[8vw] h-[14vh] md:h-[16vh] overflow-hidden pointer-events-none">
       <svg
-        class="energy-ekg block"
-        viewBox="0 0 200 20"
+        class="energy-ekg block w-full h-full"
+        viewBox="0 0 1000 100"
         preserveAspectRatio="none"
-        style="width: 200%; height: 100%;"
         aria-hidden="true"
       >
-        <polyline
-          points="0,10 40,10 44,8 48,12 52,10 56,10 58,14 60,2 62,16 64,10 68,10 72,9 76,11 80,10 100,10 140,10 144,8 148,12 152,10 156,10 158,14 160,2 162,16 164,10 168,10 172,9 176,11 180,10 200,10"
+        <defs>
+          <!-- Soft bloom so the active trace + head dot look like phosphor light -->
+          <filter id="ekg-glow" x="-10%" y="-50%" width="120%" height="200%">
+            <feGaussianBlur stdDeviation="2" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        <!-- (a) Ghost baseline — always visible, dim, anchors the rhythm channel -->
+        <path
+          class="ekg-base"
+          d="M 0 50 L 380 50 C 395 50 405 44 415 44 C 425 44 435 50 450 50 L 470 50 L 475 56 L 482 4 L 489 60 L 495 50 L 540 50 C 565 50 585 44 600 44 C 615 44 635 50 660 50 L 1000 50"
           fill="none"
-          stroke="rgba(255,255,255,0.7)"
-          stroke-width="0.5"
+          stroke="rgba(255,255,255,0.10)"
+          stroke-width="3"
           stroke-linecap="round"
           stroke-linejoin="round"
           vector-effect="non-scaling-stroke"
+        />
+
+        <!-- (b) Active comet — same path, stroke-dashoffset animated via rAF -->
+        <path
+          class="ekg-active"
+          d="M 0 50 L 380 50 C 395 50 405 44 415 44 C 425 44 435 50 450 50 L 470 50 L 475 56 L 482 4 L 489 60 L 495 50 L 540 50 C 565 50 585 44 600 44 C 615 44 635 50 660 50 L 1000 50"
+          fill="none"
+          stroke="rgba(255,255,255,0.95)"
+          stroke-width="3.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          vector-effect="non-scaling-stroke"
+          filter="url(#ekg-glow)"
+        />
+
+        <!-- (c) Leading head dot — riding the front of the comet -->
+        <circle
+          class="ekg-head"
+          r="5"
+          fill="white"
+          filter="url(#ekg-glow)"
+          style="opacity: 0"
         />
       </svg>
     </div>
@@ -609,19 +645,18 @@ const stops = [
   }
 
   /* ── "Energy" EKG trace ──
-     A heart-rate monitor line sweeps right-to-left under the headline,
-     with one QRS spike per cycle. The SVG is 200% the container width
-     containing two identical pulse patterns; translating -50% slides the
-     first pattern off-screen left while the second arrives from the right,
-     seamlessly. Same "typography IS the concept" pattern as ambiguity /
-     building — the trace makes "Energy" read as a live vitals signal. */
-  .energy-ekg {
-    animation: ekgSlide 4.5s linear infinite;
-    will-change: transform;
-  }
-  @keyframes ekgSlide {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+     Heart-rate monitor signal under the headline. Three SVG layers:
+     (a) faint ghost path showing the full waveform at rest,
+     (b) bright "comet" of light that draws across the path,
+     (c) leading head dot that rides the front of the comet.
+     The comet is drawn via animated stroke-dashoffset and the head is
+     positioned via getPointAtLength — both driven by rAF in
+     initEnergyEkg (script below) for per-frame precision and a subtle
+     ±8% phase-jitter per cycle so the rhythm doesn't telegraph "CSS loop".
+     Same "typography IS the concept" pattern as ambiguity / building —
+     the trace makes "Energy" read as a live vitals signal. */
+  .ekg-active {
+    transition: none;
   }
 
 </style>
@@ -991,4 +1026,78 @@ const stops = [
   }
 
   document.addEventListener('astro:page-load', initBestSection);
+</script>
+
+<!-- "Energy" EKG trace — rAF loop drives stroke-dashoffset on the active
+     comet and positions the leading head dot via getPointAtLength. The
+     ghost baseline beneath is static. ±8% phase-jitter on cycle duration
+     keeps the rhythm from feeling like a perfectly-quantized CSS loop. -->
+<script>
+  function initEnergyEkg() {
+    const active = document.querySelector('.ekg-active') as SVGPathElement | null;
+    const head   = document.querySelector('.ekg-head')   as SVGCircleElement | null;
+    if (!active || !head) return;
+
+    // Respect reduced motion — show a static, fully-drawn trace, no loop.
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) {
+      active.style.strokeDasharray = 'none';
+      head.style.opacity = '0';
+      return;
+    }
+
+    const pathLen  = active.getTotalLength();
+    const tailFrac = 0.38;                       // comet length as % of path
+    const tailLen  = pathLen * tailFrac;
+    const totalRange = pathLen + tailLen;        // head travels this far per cycle
+
+    active.style.strokeDasharray = `${tailLen} ${pathLen}`;
+
+    const controller = new AbortController();
+    document.addEventListener('astro:before-swap', () => controller.abort(), { once: true });
+
+    const baseCycle = 1700;                      // ms; ~35 BPM, alert but not frantic
+    let cycle = baseCycle;
+    let startTime: number | null = null;
+    let rafId = 0;
+
+    function tick(now: number) {
+      if (startTime === null) startTime = now;
+      let t = ((now - startTime) % cycle) / cycle;
+
+      // When we wrap, re-randomize the next cycle's duration ±8% so the
+      // rhythm is steady-but-organic (real heart rate doesn't tick perfectly).
+      if (t < 0.005 && now - startTime > 100) {
+        const jitter = 0.92 + Math.random() * 0.16;  // 0.92..1.08
+        cycle = baseCycle * jitter;
+      }
+
+      const headLength = t * totalRange;         // 0 .. pathLen + tailLen
+      const dashStart  = headLength - tailLen;
+
+      // Shift the dash pattern so the visible segment is [dashStart, headLength]
+      active.style.strokeDashoffset = String(-dashStart);
+
+      // Position the head dot at the leading edge (only when on-path)
+      if (headLength >= 0 && headLength <= pathLen) {
+        const p = active.getPointAtLength(headLength);
+        head.setAttribute('cx', String(p.x));
+        head.setAttribute('cy', String(p.y));
+        head.style.opacity = '1';
+      } else {
+        head.style.opacity = '0';
+      }
+
+      if (!controller.signal.aborted) {
+        rafId = requestAnimationFrame(tick);
+      }
+    }
+
+    rafId = requestAnimationFrame(tick);
+    controller.signal.addEventListener('abort', () => {
+      if (rafId) cancelAnimationFrame(rafId);
+    });
+  }
+
+  document.addEventListener('astro:page-load', initEnergyEkg);
 </script>
