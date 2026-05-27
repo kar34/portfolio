@@ -339,14 +339,6 @@ const stops = [
           filter="url(#ekg-glow)"
         />
 
-        <!-- (c) Leading head dot — riding the front of the comet -->
-        <circle
-          class="ekg-head"
-          r="5"
-          fill="white"
-          filter="url(#ekg-glow)"
-          style="opacity: 0"
-        />
       </svg>
     </div>
   </section>
@@ -1035,21 +1027,19 @@ const stops = [
 <script>
   function initEnergyEkg() {
     const active = document.querySelector('.ekg-active') as SVGPathElement | null;
-    const head   = document.querySelector('.ekg-head')   as SVGCircleElement | null;
-    if (!active || !head) return;
+    if (!active) return;
 
     // Respect reduced motion — show a static, fully-drawn trace, no loop.
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) {
       active.style.strokeDasharray = 'none';
-      head.style.opacity = '0';
       return;
     }
 
     const pathLen  = active.getTotalLength();
     const tailFrac = 0.38;                       // comet length as % of path
     const tailLen  = pathLen * tailFrac;
-    const totalRange = pathLen + tailLen;        // head travels this far per cycle
+    const totalRange = pathLen + tailLen;        // travel distance per cycle
 
     active.style.strokeDasharray = `${tailLen} ${pathLen}`;
 
@@ -1072,21 +1062,9 @@ const stops = [
         cycle = baseCycle * jitter;
       }
 
-      const headLength = t * totalRange;         // 0 .. pathLen + tailLen
-      const dashStart  = headLength - tailLen;
-
-      // Shift the dash pattern so the visible segment is [dashStart, headLength]
+      // Shift the dash pattern so the visible comet rides the leading edge.
+      const dashStart = t * totalRange - tailLen;
       active.style.strokeDashoffset = String(-dashStart);
-
-      // Position the head dot at the leading edge (only when on-path)
-      if (headLength >= 0 && headLength <= pathLen) {
-        const p = active.getPointAtLength(headLength);
-        head.setAttribute('cx', String(p.x));
-        head.setAttribute('cy', String(p.y));
-        head.style.opacity = '1';
-      } else {
-        head.style.opacity = '0';
-      }
 
       if (!controller.signal.aborted) {
         rafId = requestAnimationFrame(tick);
