@@ -287,8 +287,32 @@ const stops = [
   <section class="relative z-10 pt-80 md:pt-[24rem] pb-24 md:pb-32 px-[6vw] md:px-[8vw] text-center">
     <h2 class="best-intro-heading max-w-6xl mx-auto">
       <span class="block text-[6.3vw] md:text-[3.8vw] uppercase font-semibold tracking-wider text-white/75 leading-none mb-5 md:mb-7">Where I get my</span>
-      <span class="stage-energy block text-[17vw] md:text-[12.6vw] font-semibold uppercase tracking-tighter leading-[0.85] whitespace-nowrap">Energy</span>
+      <span class="block text-[17vw] md:text-[12.6vw] font-semibold uppercase tracking-tighter leading-[0.85] whitespace-nowrap">Energy</span>
     </h2>
+
+    <!-- Heart-rate EKG line — sweeps right-to-left across the viewport with
+         a single QRS spike per cycle, making the headline read as a live
+         vitals signal under the word "Energy". Full-bleed: -mx-[6vw] cancels
+         the section's horizontal padding so the trace spans 100vw. -->
+    <div class="energy-ekg-wrap relative mt-[5vh] md:mt-[7vh] -mx-[6vw] md:-mx-[8vw] h-[10vh] md:h-[12vh] overflow-hidden pointer-events-none">
+      <svg
+        class="energy-ekg block"
+        viewBox="0 0 200 20"
+        preserveAspectRatio="none"
+        style="width: 200%; height: 100%;"
+        aria-hidden="true"
+      >
+        <polyline
+          points="0,10 40,10 44,8 48,12 52,10 56,10 58,14 60,2 62,16 64,10 68,10 72,9 76,11 80,10 100,10 140,10 144,8 148,12 152,10 156,10 158,14 160,2 162,16 164,10 168,10 172,9 176,11 180,10 200,10"
+          fill="none"
+          stroke="rgba(255,255,255,0.7)"
+          stroke-width="0.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          vector-effect="non-scaling-stroke"
+        />
+      </svg>
+    </div>
   </section>
 
   <!-- Pinned stages reveal -->
@@ -584,33 +608,20 @@ const stops = [
     50%      { filter: blur(4px); }
   }
 
-  /* ── "Energy" text effect ──
-     Same family of move as ambiguity / building: typography IS the concept.
-     The word radiates light on a fast beat — pulsing white halo + tight
-     scale "throb" — so it visually reads as alive / electric / charged.
-     Two animations sharing the same ~1.4s cycle (vs ambiguity's slow 5s
-     drift) so the energy feels insistent rather than dreamy. */
-  .stage-energy {
-    animation:
-      energyGlow 1.4s ease-in-out infinite,
-      energyPulse 1.4s ease-in-out infinite;
-    will-change: transform, text-shadow;
+  /* ── "Energy" EKG trace ──
+     A heart-rate monitor line sweeps right-to-left under the headline,
+     with one QRS spike per cycle. The SVG is 200% the container width
+     containing two identical pulse patterns; translating -50% slides the
+     first pattern off-screen left while the second arrives from the right,
+     seamlessly. Same "typography IS the concept" pattern as ambiguity /
+     building — the trace makes "Energy" read as a live vitals signal. */
+  .energy-ekg {
+    animation: ekgSlide 4.5s linear infinite;
+    will-change: transform;
   }
-  @keyframes energyGlow {
-    0%, 100% {
-      text-shadow:
-        0 0 30px rgba(255, 255, 255, 0.25),
-        0 0 70px rgba(255, 255, 255, 0.08);
-    }
-    50% {
-      text-shadow:
-        0 0 55px rgba(255, 255, 255, 0.55),
-        0 0 120px rgba(255, 255, 255, 0.22);
-    }
-  }
-  @keyframes energyPulse {
-    0%, 100% { transform: scale(1); }
-    50%      { transform: scale(1.025); }
+  @keyframes ekgSlide {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
 
 </style>
