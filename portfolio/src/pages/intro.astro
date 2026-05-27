@@ -304,7 +304,7 @@ const stops = [
         aria-hidden="true"
       >
         <defs>
-          <!-- Soft bloom so the active trace + head dot look like phosphor light -->
+          <!-- Soft bloom so the active trace looks like phosphor light -->
           <filter id="ekg-glow" x="-10%" y="-50%" width="120%" height="200%">
             <feGaussianBlur stdDeviation="2" result="blur" />
             <feMerge>
@@ -312,6 +312,15 @@ const stops = [
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
+          <!-- Moving window — drives the visible comet via x-position
+               instead of stroke-dashoffset. The horizontal-x of this
+               rect is animated linearly, so the comet's apparent
+               velocity is constant regardless of how much arc length
+               the QRS spike adds (its vertical excursion was making
+               the stroke-dash approach "stall" mid-traverse). -->
+          <clipPath id="ekg-clip">
+            <rect class="ekg-clip-rect" x="-380" y="-100" width="380" height="300" />
+          </clipPath>
         </defs>
 
         <!-- (a) Ghost baseline — always visible, dim, anchors the rhythm channel -->
@@ -326,18 +335,21 @@ const stops = [
           vector-effect="non-scaling-stroke"
         />
 
-        <!-- (b) Active comet — same path, stroke-dashoffset animated via rAF -->
-        <path
-          class="ekg-active"
-          d="M 0 50 L 380 50 C 395 50 405 44 415 44 C 425 44 435 50 450 50 L 470 50 L 475 56 L 482 4 L 489 60 L 495 50 L 540 50 C 565 50 585 44 600 44 C 615 44 635 50 660 50 L 1000 50"
-          fill="none"
-          stroke="rgba(255,255,255,0.95)"
-          stroke-width="3.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          vector-effect="non-scaling-stroke"
-          filter="url(#ekg-glow)"
-        />
+        <!-- (b) Active comet — full path drawn fully bright, clipped to the
+             moving window so only a horizontal slice is visible at any time -->
+        <g clip-path="url(#ekg-clip)">
+          <path
+            class="ekg-active"
+            d="M 0 50 L 380 50 C 395 50 405 44 415 44 C 425 44 435 50 450 50 L 470 50 L 475 56 L 482 4 L 489 60 L 495 50 L 540 50 C 565 50 585 44 600 44 C 615 44 635 50 660 50 L 1000 50"
+            fill="none"
+            stroke="rgba(255,255,255,0.95)"
+            stroke-width="3.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            vector-effect="non-scaling-stroke"
+            filter="url(#ekg-glow)"
+          />
+        </g>
 
       </svg>
     </div>
@@ -639,17 +651,16 @@ const stops = [
   /* ── "Energy" EKG trace ──
      Heart-rate monitor signal under the headline. Two SVG layers:
      (a) faint ghost path showing the full waveform at rest,
-     (b) bright "comet" of light that crosses the path.
-     The comet is drawn via animated stroke-dashoffset driven by rAF in
-     initEnergyEkg (script below) on a three-phase cycle —
-     CROSS (head traverses 0→pathLen), EXIT (tail follows off the right),
-     PAUSE (no comet) — so it crosses fully, exits cleanly, then rests
-     for ~1s before pulsing again. Same "typography IS the concept"
-     pattern as ambiguity / building — trace makes "Energy" read as
-     a live vitals signal. */
-  .ekg-active {
-    transition: none;
-  }
+     (b) bright path drawn fully bright, clipped to a moving window.
+     The visible "comet" is a clipPath rect whose x-position is animated
+     by rAF in initEnergyEkg on a three-phase cycle: CROSS (linear left
+     → right traverse), EXIT (tail follows off the right), PAUSE (window
+     parked off-screen, only ghost visible). Using a horizontal clip
+     instead of stroke-dashoffset means the comet's apparent velocity is
+     constant — the QRS spike's vertical excursion no longer adds arc
+     length that would otherwise stall the comet mid-traverse.
+     Same "typography IS the concept" pattern as ambiguity / building —
+     trace makes "Energy" read as a live vitals signal. */
 
 </style>
 
@@ -1026,37 +1037,36 @@ const stops = [
      keeps the rhythm from feeling like a perfectly-quantized CSS loop. -->
 <script>
   function initEnergyEkg() {
-    const active = document.querySelector('.ekg-active') as SVGPathElement | null;
-    if (!active) return;
+    const clipRect = document.querySelector('.ekg-clip-rect') as SVGRectElement | null;
+    if (!clipRect) return;
 
-    // Respect reduced motion — show a static, fully-drawn trace, no loop.
+    // Respect reduced motion — reveal the entire path statically, no loop.
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) {
-      active.style.strokeDasharray = 'none';
+      clipRect.setAttribute('x', '0');
+      clipRect.setAttribute('width', '1000');
       return;
     }
-
-    const pathLen  = active.getTotalLength();
-    const tailFrac = 0.38;                        // comet length as % of path
-    const tailLen  = pathLen * tailFrac;
-
-    // Gap is much larger than pathLen so the dash pattern's *next*
-    // iteration is always off-path — guarantees only ONE comet visible.
-    active.style.strokeDasharray = `${tailLen} ${pathLen * 3}`;
 
     const controller = new AbortController();
     document.addEventListener('astro:before-swap', () => controller.abort(), { once: true });
 
-    // Three-phase cycle so the comet visibly crosses the *full* width
-    // before exiting, then pauses:
-    //   - CROSS: head linearly traverses 0 → pathLen across the screen
-    //   - EXIT:  tail follows out, the comet leaves the right edge cleanly
-    //   - PAUSE: dash held off-path, no comet visible
-    const CROSS = 1500;
-    const EXIT  = 400;
-    const PAUSE = 1100;
+    // Coordinates are in viewBox-x units (path viewBox is 0 0 1000 100).
+    // The clip window is a fixed-width rect that slides left → right;
+    // because it's purely horizontal, the comet's x-velocity is constant
+    // regardless of how much arc length the QRS spike contributes.
+    const WINDOW = 380;                 // visible comet width (~38% of path)
+    const PATH_W = 1000;                // path viewBox width
+    const offX   = PATH_W + 100;        // safe parking spot off-screen right
+
+    // Three-phase cycle:
+    //   CROSS (1700ms): window leading edge slides 0 → PATH_W
+    //   EXIT  (300ms):  tail follows off the right edge
+    //   PAUSE (2000ms): window parked off-screen — only ghost trace visible
+    const CROSS = 1700;
+    const EXIT  = 300;
+    const PAUSE = 2000;
     const cycle = CROSS + EXIT + PAUSE;
-    const offPath = pathLen + tailLen + 10;
 
     let startTime: number | null = null;
     let rafId = 0;
@@ -1064,22 +1074,19 @@ const stops = [
     function tick(now: number) {
       if (startTime === null) startTime = now;
       const elapsed = (now - startTime) % cycle;
-      let dashStart: number;
+      let clipX: number;
 
       if (elapsed < CROSS) {
-        // Cross phase — head moves 0 → pathLen, tail trails behind
         const s = elapsed / CROSS;
-        dashStart = s * pathLen - tailLen;
+        clipX = s * PATH_W - WINDOW;
       } else if (elapsed < CROSS + EXIT) {
-        // Exit phase — tail follows the head off the right edge
         const s = (elapsed - CROSS) / EXIT;
-        dashStart = (pathLen - tailLen) + s * tailLen;
+        clipX = (PATH_W - WINDOW) + s * WINDOW;
       } else {
-        // Pause phase — comet parked off-path, ghost baseline stays
-        dashStart = offPath;
+        clipX = offX;
       }
 
-      active.style.strokeDashoffset = String(-dashStart);
+      clipRect.setAttribute('x', String(clipX));
 
       if (!controller.signal.aborted) {
         rafId = requestAnimationFrame(tick);
