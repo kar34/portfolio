@@ -195,9 +195,67 @@ const stops = [
   <!-- Section intro: layered hierarchy — supporting line / poster line -->
   <section class="relative z-10 pt-80 md:pt-[24rem] pb-24 md:pb-32 px-[6vw] md:px-[8vw] text-center">
     <h2 class="best-intro-heading max-w-6xl mx-auto">
-      <span class="block text-[5.25vw] md:text-[3.15vw] uppercase font-semibold tracking-wider text-white/75 leading-none mb-5 md:mb-7">When I'm</span>
-      <span class="block text-[14vw] md:text-[10.5vw] font-semibold uppercase tracking-tighter leading-[0.85] whitespace-nowrap">At My Best</span>
+      <span class="block text-[6.3vw] md:text-[3.8vw] uppercase font-semibold tracking-wider text-white/75 leading-none mb-5 md:mb-7">Where I get my</span>
+      <span class="block text-[17vw] md:text-[12.6vw] font-semibold uppercase tracking-tighter leading-[0.85] whitespace-nowrap">Energy</span>
     </h2>
+
+    <!-- Heart-rate EKG line — three-layer SVG signal beneath the headline.
+         (a) faint ghost shows the full waveform at rest, (b) bright "comet"
+         clipped to a moving window slides across, constant velocity. Driven
+         by a rAF loop (initEnergyEkg below). SVG filter glow blooms the active
+         trace so the signal radiates light, matching the "Energy" concept. -->
+    <div class="energy-ekg-wrap relative mt-[5vh] md:mt-[7vh] -mx-[6vw] md:-mx-[8vw] h-[14vh] md:h-[16vh] overflow-hidden pointer-events-none">
+      <svg
+        class="energy-ekg block w-full h-full"
+        viewBox="0 0 1000 100"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <defs>
+          <!-- Soft bloom so the active trace looks like phosphor light -->
+          <filter id="ekg-glow" x="-10%" y="-50%" width="120%" height="200%">
+            <feGaussianBlur stdDeviation="2" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <!-- Moving window — drives the visible comet via x-position so the
+               comet's apparent velocity is constant regardless of QRS spike. -->
+          <clipPath id="ekg-clip">
+            <rect class="ekg-clip-rect" x="-380" y="-100" width="380" height="300" />
+          </clipPath>
+        </defs>
+
+        <!-- (a) Ghost baseline — always visible, dim, anchors the rhythm channel -->
+        <path
+          class="ekg-base"
+          d="M 0 50 L 380 50 C 395 50 405 44 415 44 C 425 44 435 50 450 50 L 470 50 L 475 56 L 482 4 L 489 60 L 495 50 L 540 50 C 565 50 585 44 600 44 C 615 44 635 50 660 50 L 1000 50"
+          fill="none"
+          stroke="rgba(255,255,255,0.18)"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          vector-effect="non-scaling-stroke"
+        />
+
+        <!-- (b) Active comet — full path drawn bright, clipped to the moving window -->
+        <g clip-path="url(#ekg-clip)">
+          <path
+            class="ekg-active"
+            d="M 0 50 L 380 50 C 395 50 405 44 415 44 C 425 44 435 50 450 50 L 470 50 L 475 56 L 482 4 L 489 60 L 495 50 L 540 50 C 565 50 585 44 600 44 C 615 44 635 50 660 50 L 1000 50"
+            fill="none"
+            stroke="rgba(255,255,255,0.95)"
+            stroke-width="3.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            vector-effect="non-scaling-stroke"
+            filter="url(#ekg-glow)"
+          />
+        </g>
+
+      </svg>
+    </div>
   </section>
 
   <!-- Pinned stages reveal -->
@@ -617,4 +675,67 @@ const stops = [
   }
 
   document.addEventListener('astro:page-load', initAboutBestSection);
+</script>
+
+<!-- "Energy" EKG trace — rAF loop slides a horizontal clip window across the
+     bright comet path; the ghost baseline beneath is static. Three-phase cycle:
+     CROSS (linear traverse), EXIT (tail follows off the right), PAUSE (parked
+     off-screen, only ghost visible). Horizontal clip → constant comet velocity. -->
+<script>
+  function initEnergyEkg() {
+    const clipRect = document.querySelector('.ekg-clip-rect') as SVGRectElement | null;
+    if (!clipRect) return;
+
+    // Respect reduced motion — reveal the entire path statically, no loop.
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) {
+      clipRect.setAttribute('x', '0');
+      clipRect.setAttribute('width', '1000');
+      return;
+    }
+
+    const controller = new AbortController();
+    document.addEventListener('astro:before-swap', () => controller.abort(), { once: true });
+
+    const WINDOW = 380;                 // visible comet width (~38% of path)
+    const PATH_W = 1000;                // path viewBox width
+    const offX   = PATH_W + 100;        // safe parking spot off-screen right
+
+    const CROSS = 1700;
+    const EXIT  = 300;
+    const PAUSE = 2000;
+    const cycle = CROSS + EXIT + PAUSE;
+
+    let startTime: number | null = null;
+    let rafId = 0;
+
+    function tick(now: number) {
+      if (startTime === null) startTime = now;
+      const elapsed = (now - startTime) % cycle;
+      let clipX: number;
+
+      if (elapsed < CROSS) {
+        const s = elapsed / CROSS;
+        clipX = s * PATH_W - WINDOW;
+      } else if (elapsed < CROSS + EXIT) {
+        const s = (elapsed - CROSS) / EXIT;
+        clipX = (PATH_W - WINDOW) + s * WINDOW;
+      } else {
+        clipX = offX;
+      }
+
+      clipRect.setAttribute('x', String(clipX));
+
+      if (!controller.signal.aborted) {
+        rafId = requestAnimationFrame(tick);
+      }
+    }
+
+    rafId = requestAnimationFrame(tick);
+    controller.signal.addEventListener('abort', () => {
+      if (rafId) cancelAnimationFrame(rafId);
+    });
+  }
+
+  document.addEventListener('astro:page-load', initEnergyEkg);
 </script>
