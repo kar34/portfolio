@@ -173,11 +173,6 @@ Use these files exactly — do not rename them.
 - Do not add reference mocks or screenshots to the public repo without Kenny's explicit ask
 
 ## Local Context (not committed — never publish)
-The repo is public on GitHub. The files below live locally for Claude's reference but must never end up in the public repo. They are gitignored. Do not stage them, do not suggest committing them, do not move them to a tracked location, and do not echo their contents into tracked files (e.g., README, blog copy, PR descriptions). If you see a new evaluative or screenshot-style file appear in the working tree, assume local-only and confirm with Kenny before any `git add`.
+The repo is public on GitHub. Some files live locally for Claude's reference but must never end up in the public repo. They are gitignored. Do not stage them, do not suggest committing them, do not move them to a tracked location, and do not echo their contents into tracked files (e.g., README, blog copy, PR descriptions). If you see a new screenshot-style file appear in the working tree, assume local-only and confirm with Kenny before any `git add`.
 
-Local-only files:
-- `EVALUATION.md` — hiring-manager evaluation of the live site for a staff product designer candidacy, the changes shipped in response, Kenny's preferences (e.g., do-not-publish items), and intentional design choices that should not be "fixed" (e.g., the AMBIGUITY/building expressive typography on About). Read this before making copy, positioning, or content decisions.
-- `Kenny_Raymond_Portfolio_Evaluation.docx` and any other `*.docx` / `*.doc` — the Word version of the same evaluation plus any related private notes. Covered by the `*.docx` / `*.doc` rules in `.gitignore`.
-- `Mocks/` (entire folder) — Kenny's personal screenshots of the deployed site for his own progress tracking and reference (e.g., `home.png`, `about.png`, `video_casestudy.png`, `reactions_casestudy.png`, `nbf_casestudy.png`). The original Webflow reference jpegs that used to live here were removed when the rebuild completed and should not be restored to the repo. The whole folder is gitignored.
-
-Rule of thumb: anything in `Mocks/` is local-only. The entire folder is Kenny's private workspace, not a public reference. If Kenny later asks to add new mocks or references, confirm whether they should be tracked before staging.
+- `Mocks/` (entire folder) — Kenny's personal screenshots of the deployed site for his own progress tracking and reference. The whole folder is gitignored and is not a public reference. If Kenny later asks to add new mocks or references, confirm whether they should be tracked before staging.
