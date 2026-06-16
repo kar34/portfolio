@@ -263,12 +263,12 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Mobile-only: prevent elastic overscroll bounce that compounds with the
-     URL bar retraction animation to exaggerate layout jitter. */
+  /* Mobile-only: suppress horizontal overscroll bounce only. Vertical is left
+     native (auto) so pull-to-refresh works at the top of the page. */
   @media (max-width: 767px) {
     html,
     body {
-      overscroll-behavior: none;
+      overscroll-behavior-x: none;
     }
   }
 
