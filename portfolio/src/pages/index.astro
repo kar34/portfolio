@@ -204,7 +204,7 @@ import WorkIndex from '../components/WorkIndex.astro';
       if (heroText) {
         heroText.style.opacity   = String(Math.max(0, 1 - progress * 1.2));
         heroText.style.transform = isMobile
-          ? `translateY(${-progress * 10}vh)`
+          ? `translateY(${-progress * 22}vh)`
           : `translateX(${-progress * 100}vw)`;
       }
 
@@ -212,7 +212,7 @@ import WorkIndex from '../components/WorkIndex.astro';
       // incoming About block. On mobile it just scales down a touch and stays
       // put up top — no horizontal slide — while About rises beneath it.
       if (heroPortrait) {
-        const scale = isMobile ? 1 - progress * 0.15   // 1 → 0.85 (barely shrinks)
+        const scale = isMobile ? 1                     // mobile: stays full size
                                : 1 - progress * 0.38;  // 1 → 0.62 (stays prominent)
         const x     = isMobile ? 0 : -progress * 42;   // 0 → -42vw on desktop
         heroPortrait.style.transform = `translateX(${x}vw) scale(${scale})`;
