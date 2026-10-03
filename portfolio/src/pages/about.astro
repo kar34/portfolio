@@ -6,23 +6,38 @@ import Layout from '../layouts/Layout.astro';
 // per-company sub-bullets).
 const stops = [
   {
-    id: 'linkedin',
+    id: 'pinterest',
     index: '01',
+    color: '#E60023',
+    logo: '/pinterest.svg',
+    logoScale: '58%',
+    name: 'Pinterest',
+    role: 'Staff Product Designer, Social Experiences',
+    dates: '2026 — Present',
+    datesShort: '2026 — NOW',
+    yearsLabel: '2026 — Now',
+    summary:
+      "Leading product strategy and design for Pinterest's social ecosystem—creating ways for people to connect, share, and engage that drive growth while preserving what makes Pinterest distinct: inspiration without the pressures of social media.",
+    impact: [],
+  },
+  {
+    id: 'linkedin',
+    index: '02',
     color: '#0A66C2',
     logo: '/linkedin.png',
     logoScale: '100%',
     name: 'LinkedIn',
     role: 'Staff Product Designer',
-    dates: 'Nov 2021 — Present',
-    datesShort: '2021 — NOW',
-    yearsLabel: '2021 — Now',
+    dates: 'Nov 2021 — 2026',
+    datesShort: '2021 — 2026',
+    yearsLabel: '2021 — 2026',
     summary:
       "Leading end-to-end product design and direction for LinkedIn's short-form video initiative — a top company priority. Stepped in as Interim Product Manager for six months. Earlier, led design for trust & safety on the feed.",
     impact: [],
   },
   {
     id: 'facebook',
-    index: '02',
+    index: '03',
     color: '#1877F2',
     logo: '/facebook.png',
     logoScale: '100%',
@@ -37,7 +52,7 @@ const stops = [
   },
   {
     id: 'workday',
-    index: '03',
+    index: '04',
     color: '#F38B00',
     logo: '/workday.png',
     logoScale: '100%',
@@ -55,7 +70,7 @@ const stops = [
 
 <Layout
   title="About - Kenny Raymond"
-  description="Kenny Raymond is a Staff Product Designer with 10+ years across LinkedIn, Facebook, and Workday. PM-design hybrid focused on product strategy, storytelling, and aligning teams around a compelling vision."
+  description="Kenny Raymond is a Staff Product Designer with 10+ years across Pinterest, LinkedIn, Facebook, and Workday. PM-design hybrid focused on product strategy, storytelling, and aligning teams around a compelling vision."
   ogImage="/bw-ken-big.png"
 >
 
@@ -104,6 +119,7 @@ const stops = [
     <div id="experience-stops">
       {stops.map((stop, i) => {
         const numStages = 1 + stop.impact.length;
+        const [dateStart, dateEnd] = stop.datesShort.split(' — ');
         // No bullets on /about → keep each stop a viewport tall but give a
         // little extra so the intro stage breathes during the wash.
         const sectionMinHeight = `${120 + stop.impact.length * 80}svh`;
@@ -147,7 +163,8 @@ const stops = [
                     </div>
 
                     <h3 class="stop-years text-[18vw] md:text-[10vw] leading-[0.85] font-semibold tracking-tighter -ml-1">
-                      {stop.datesShort}
+                      <span class="block whitespace-nowrap">{dateStart} —</span>
+                      <span class="block">{dateEnd}</span>
                     </h3>
                   </div>
 
